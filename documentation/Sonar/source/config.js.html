@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>config.js</title>
+    <style>
+      html {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      pre {
+        margin: 0;
+        padding: 25px;
+      }
+    </style>
+    <style>
+    .highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
+.highlight .c { color: #408080; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #FF0000 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666666 } /* Operator */
+.highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #FF0000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #0044DD } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #7D9029 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.highlight .no { color: #880000 } /* Name.Constant */
+.highlight .nd { color: #AA22FF } /* Name.Decorator */
+.highlight .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #0000FF } /* Name.Function */
+.highlight .nl { color: #A0A000 } /* Name.Label */
+.highlight .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mb { color: #666666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666666 } /* Literal.Number.Float */
+.highlight .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #BB6688 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
+    </style>
+   </head>
+   <body>
+   <div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm">* </span>
+<span class="cm">* @package Sonar.app</span>
+<span class="cm">* @author Craig Simons &lt;craigsimons@sfu.ca&gt;</span>
+<span class="cm">* @module-attributes</span>
+<span class="cm">* @license Apache 2.0</span>
+<span class="cm">* </span>
+<span class="cm">* Application configuration for Sonar functions contained in {@link Sonar.app.application}. These configuration items are mostly intended to allow unique branding options for each deployment of Sonar.</span>
+<span class="cm">* </span>
+<span class="cm">*/</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {boolean} simulate</span>
+<span class="cm">* True if we want to run a fake test that does not send any data to an NDT server.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">simulate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {boolean} allowDebug</span>
+<span class="cm">* True to write more verbose data to console.log. ** Note: If using the Javascript console on your browser, the NDT results will be drastically lower. **</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">allowDebug</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {array(Object)} allowDebug</span>
+<span class="cm">* The list of servers we will allow the client to connect to. The structure of the object array needs to be in the following format:</span>
+<span class="cm">* ```</span>
+<span class="cm">* </span><span class="cp">[</span><span class="p">{</span>
+<span class="o">*</span> 	<span class="nx">name</span><span class="p">:</span> <span class="kt">string</span> <span class="p">(</span><span class="nx">human</span> <span class="nx">name</span> <span class="nx">displayed</span><span class="p">),</span>
+<span class="o">*</span> 	<span class="nx">address</span><span class="p">:</span> <span class="kt">string</span> <span class="p">(</span><span class="nx">ip</span> <span class="ow">or</span> <span class="nx">DNS</span> <span class="nx">address</span><span class="p">)</span>
+<span class="o">*</span> <span class="p">}</span><span class="cp">]</span><span class="cm"></span>
+<span class="cm">* ```</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">serverList</span> <span class="o">=</span> <span class="cp">[</span><span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Burnaby&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;bby-sonar.sfu.ca&#39;</span>
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Surrey&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;sry-sonar.sfu.ca&#39;</span>
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Vancouver&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;van-sonar.sfu.ca&#39;</span>			
+<span class="p">}</span><span class="cp">]</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} titleText</span>
+<span class="cm">* The main title displayed on masthead</span>
+<span class="cm">* ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#header-title*** DOM element on index.html. **</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">titleText</span> <span class="o">=</span> <span class="s1">&#39;perfSonar&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} titleBlurb</span>
+<span class="cm">* The secondary title/blurb displayed on masthead</span>
+<span class="cm">* ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#header-blurb DOM*** element on index.html. **</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">titleBlurb</span> <span class="o">=</span> <span class="s1">&#39;Network Diagnostics and Benchmarking&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} showBetaMessage</span>
+<span class="cm">* True if HTML5 Beta message should be displayed warning users that this method of speed test is not exactly reliable.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">showBetaMessage</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} betaMessageTitle</span>
+<span class="cm">* The title of the BETA message callout. Displayed if {@link #showBetaMessage} is true. </span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">betaMessageTitle</span> <span class="o">=</span> <span class="s2">&quot;BETA Notice&quot;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} betaMessageText</span>
+<span class="cm">* The message displayed in the BETA callout. Displayed if {@link #showBetaMessage} is true. </span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">betaMessageText</span> <span class="o">=</span> <span class="s1">&#39;This speed test uses new HTML5 &lt;strong&gt;Websockets&lt;/strong&gt; and &lt;strong&gt;Workers&lt;/strong&gt; technology. Due to the nature of HTML support in various web browsers, the results determined by this test will likely be lower than expected.&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} welcomeTitle</span>
+<span class="cm">* The welcome page h1 title.</span>
+<span class="cm">* ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#welcome-title DOM*** element on index.html. **</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">welcomeTitle</span> <span class="o">=</span> <span class="s2">&quot;NDT Speed Test&quot;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} welcomeBlurb</span>
+<span class="cm">* The main description on the welcome page.</span>
+<span class="cm">* ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#welcome-blurb DOM*** element on index.html. **</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">welcomeBlurb</span> <span class="o">=</span> <span class="s1">&#39;The Network Diagnostic Tool (NDT) provides a sophisticated speed and diagnostic test. An NDT test reports more than just the upload and download speeds — it also attempts to determine what, if any, problems limited these speeds, differentiating between computer configuration and network infrastructure problems. While the diagnostic messages are most useful for expert users, they can also help novice users by allowing them to provide detailed trouble reports to their network administrator.&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} resultsTitleText</span>
+<span class="cm">* The h1 tag displayed on the Results page.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">resultsTitleText</span> <span class="o">=</span> <span class="s1">&#39;Your test results&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} loadingText</span>
+<span class="cm">* The title displayed on the test page when waiting for the {@link Sonar.client.NDTjs} client to connect to the NDT server.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">loadingText</span> <span class="o">=</span> <span class="s1">&#39;Preparing speed tests...&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} uploadTestText</span>
+<span class="cm">* The title displayed on the test page when conducting the upload portion of the NDT test.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">uploadTestText</span> <span class="o">=</span> <span class="s1">&#39;Testing upload speed...&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} downloadTestText</span>
+<span class="cm">* The title displayed on the test page when conducting the download portion of the NDT test.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">downloadTestText</span> <span class="o">=</span> <span class="s1">&#39;Testing download speed...&#39;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} footerText</span>
+<span class="cm">* The title of the BETA message callout. Displayed if {@link #showBetaMessage} is true. </span>
+<span class="cm">* ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#welcome-title DOM*** element on index.html. **</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">footerText</span> <span class="o">=</span> <span class="s2">&quot;&lt;strong&gt;perfSonar&lt;/strong&gt; &amp;middot; Network Diagnostics and Benchmarking&quot;</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} defaultServerIndex</span>
+<span class="cm">* The default index of the {@link #serverList} what will be confured as the default server.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">defaultServerIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} monitorUpdateInterval</span>
+<span class="cm">* The interval the {@link Sonar.app.application#monitorTest monitorTest} callback function will be run. A higher value **may** impact overall test results due to the extra processing load.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">monitorUpdateInterval</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} gaugeMaxValue</span>
+<span class="cm">* The maximum value displayed on the {@link Sonar.app.application#speedGauge}, which should be in bits per second.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">gaugeMaxValue</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+</pre></div>
+
+   </body>
+</html>

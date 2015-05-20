@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Sonar NDT Test</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script type="text/javascript" src="assets/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+		<link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/bootstrap/css/bootstrap-theme.min.css">
+		<link type="text/css" rel="stylesheet" href="assets/morris/morris.css">
+		<link type="text/css" rel="stylesheet" href="css/main.css">
+	</head>
+	<body>
+
+	<div class="bs-brand-header" tabindex="-1">
+		<div class="container">
+			<img src="images/logo.png" alt="Logo" />
+		</div>
+	</div>
+	<div class="bs-docs-header" tabindex="-1">
+		<div class="container">
+			<h1 id="header-title">perfSonar</h1>
+			<p id="header-blurb">Network Diagnostics and Benchmarking.</p>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="errorWindow" tabindex="-1" role="dialog" aria-labelledby="errorWindowLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="errorWindowLabel">Error</h4>
+				</div>
+				<div class="modal-body">An error has occurred.</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div role="tabpanel">
+		<ul class="nav nav-tabs hide" role="tablist" id="pages">
+			<li role="presentation" class="active"><a href="#welcome" aria-controls="welcome" role="tab" data-toggle="tab">Welcome</a></li>
+			<li role="presentation"><a href="#test" aria-controls="test" role="tab" data-toggle="tab">Test</a></li>
+			<li role="presentation"><a href="#results" aria-controls="results" role="tab" data-toggle="tab">Results</a></li>
+		</ul>	
+		<div class="tab-content">
+			<div id="welcome" role="tabpanel" class="tab-pane fade in active">
+				<div class="tab-content">
+					<div class="container">
+						<h1 id="welcome-title">NDT Speed Test</h1>
+						<p id="welcome-blurb">The Network Diagnostic Tool (NDT) provides a sophisticated speed and diagnostic test. An NDT test reports more than just the upload and download speeds - it also attempts to determine what, if any, problems limited these speeds, differentiating between computer configuration and network infrastructure problems. While the diagnostic messages are most useful for expert users, they can also help novice users by allowing them to provide detailed trouble reports to their network administrator.</p>
+
+						<div id="beta-message" class="bs-callout bs-callout-danger hide">
+							<h4>BETA Notice</h4>
+							<p>This speed test uses new HTML5 <strong>Websockets</strong> and <strong>Workers</strong> technology. Due to the nature of HTML support in various web browsers, the results determined by this test will likely be lower than expected.</p>
+						</div>
+						
+						<div class="row">
+							<div class="col-md-3">
+							<form>
+								<div class="form-group">
+									<label for="serverList">Choose a Server</label>
+									<select id="serverList" class="form-control"></select>
+								</div>
+							</form>
+							<button type="button" id="start" class="btn btn-primary">Begin Test</button>
+							</div>
+						</div>						
+					</div>
+				</div>
+			</div><!-- welcome page -->
+
+			<div id="test" role="tabpanel" class="tab-pane fade">
+				<div class="tab-content">
+					<div class="container">
+						<div id="test-status">
+							<h2></h2>
+						</div>
+						<div class="row">
+							<div class="col-md-12 gauge-wrapper">
+								<canvas id="speedGauge"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!-- test page -->
+
+			<div id="results" role="tabpanel" class="tab-pane fade">
+				<div class="tab-content">
+					<div class="container">	
+						<h1><span id="resultsTitleText"></span></h1>
+						<div role="tabpanel">
+							<ul class="nav nav-tabs" role="tablist">
+								<li role="presentation" class="active"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab">Summary</a></li>
+								<li role="presentation"><a href="#chart" aria-controls="chart" role="tab" data-toggle="tab">Chart</a></li>
+								<li role="presentation"><a href="#details" aria-controls="details" role="tab" data-toggle="tab">Details</a></li>
+								<li role="presentation"><a href="#advanced" aria-controls="advanced" role="tab" data-toggle="tab">Advanced</a></li>
+							</ul>
+							<div class="tab-content">
+								<div role="tabpanel" class="tab-pane fade in active" id="summary">
+									<div class="container">
+										<div class="col-lg-6 col-md-6">
+											<div class="results-number panel panel-primary">
+												<div class="panel-heading">
+													<div class="row">
+														<div class="col-xs-3">
+															<span class="results-icon glyphicon glyphicon-upload" aria-hidden="true"></span>
+														</div>
+														<div class="col-xs-9 text-right">
+															<div class="number" id="upload-speed">0.0</div>
+															<div class="units" id="upload-speed-units">mb/s</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>									
+										<div class="col-lg-6 col-md-12">
+											<div class="results-number panel panel-primary">
+												<div class="panel-heading">
+													<div class="row">
+														<div class="col-xs-3">
+															<span class="results-icon glyphicon glyphicon-download" aria-hidden="true"></span>
+														</div>
+														<div class="col-xs-9 text-right">
+															<div class="number" id="download-speed">0.0</div>
+															<div class="units" id="download-speed-units">mb/s</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<p><b>Server:</b> <span id="currentServer"></span></p>
+											<p><b>Network latency:</b> <span id="latency">0.0</span> msec round trip time</p>
+											<p><b>Jitter:</b> <span id="jitter">0.0 msec</span></p>
+											<button type="button" id="testAgain" class="btn btn-primary">Test Again</button>
+										</div>																		                
+									</div>								
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="chart">
+									<div id="results-chart"></div>
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="details">
+									<h4><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> System Environment</h4>
+									<table class="table table-striped table-condensed">
+										<tbody>
+											<tr>
+												<td class="details-property">Your System</td>
+												<td class="details-value"><span id="detailsOperatingSystem"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Plugin Version</td>
+												<td class="details-value"><span id="detailsPluginVersion"></span></td>
+											</tr>
+										</tbody>
+									</table>												
+
+									<h4><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> Test Details</h4>
+									<table class="table table-striped table-condensed">
+										<tbody>
+											<tr>
+												<td class="details-property">TCP Receive Window Current</td>
+												<td class="details-value"><span id="detailsCurRwinRcvd"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">TCP Receive Window Max</td>
+												<td class="details-value"><span id="detailsMaxRwinRcvd"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">TCP Timeouts</td>
+												<td class="details-value"><span id="detailsCurRTO"></span></td>
+											</tr>										
+											<tr>
+												<td class="details-property">Packet Loss</td>
+												<td class="details-value"><span id="detailsPacketLoss"></span>%</td>
+											</tr>
+											<tr>
+												<td class="details-property">Round Trip Time Min</td>
+												<td class="details-value"><span id="detailsMinRTT"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Round Trip Time Max</td>
+												<td class="details-value"><span id="detailsMaxRTT"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Round Trip Time Avg</td>
+												<td class="details-value"><span id="detailsAvgRTT"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Jitter</td>
+												<td class="details-value"><span id="detailsJitter"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Selective Acks</td>
+												<td class="details-value"><span id="detailsSACKsRcvd"></span></td>
+											</tr>												
+										</tbody>
+									</table>
+
+									<h4><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Diagnosis</h4>
+									<table class="table table-striped table-condensed">
+										<tbody>
+											<tr>
+												<td class="details-property">Duplex Mismatch</td>
+												<td class="details-value"><span id="detailsMismatch"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Cable Fault</td>
+												<td class="details-value"><span id="detailsCableFault"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Congestion</td>
+												<td class="details-value"><span id="detailsCongestion"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Client/Server State</td>
+												<td class="details-value"><span id="detailsCwndtime"></span></td>
+											</tr>										
+											<tr>
+												<td class="details-property">Receive Buffer Wait</td>
+												<td class="details-value"><span id="detailsRwndtime"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Optimal Receive Buffer</td>
+												<td class="details-value"><span id="detailsOptimalRcvrBuffer"></span></td>
+											</tr>
+											<tr>
+												<td class="details-property">Bottleneck Link</td>
+												<td class="details-value"><span id="detailsBottleneck"></span></td>
+											</tr>											
+											<tr>
+												<td class="details-property">Duplicate Acks</td>
+												<td class="details-value"><span id="detailsDupAcksIn"></span></td>
+											</tr>
+										</tbody>
+									</table>											
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="advanced"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer class="footer">
+		<div id="footer-text" class="container">
+		</div>
+	</footer>
+
+	<!-- Application scripts -->
+	<script type="text/javascript" src="assets/raphael/raphael.min.js"></script>
+	<script type="text/javascript" src="assets/gauge/gauge.min.js"></script>
+	<script type="text/javascript" src="assets/morris/morris.min.js"></script>
+	<script type="text/javascript" src="sonar/app/config.js"></script>
+	<script type="text/javascript" src="sonar/client/NDTjs.js"></script>
+	<script type="text/javascript" src="sonar/client/NDTWrapper.js"></script>
+	<script type="text/javascript" src="sonar/app/application.js"></script>
+</body>
+</html>

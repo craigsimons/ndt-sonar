@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>application.js</title>
+    <style>
+      html {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      pre {
+        margin: 0;
+        padding: 25px;
+      }
+    </style>
+    <style>
+    .highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
+.highlight .c { color: #408080; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #FF0000 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666666 } /* Operator */
+.highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #FF0000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #0044DD } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #7D9029 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.highlight .no { color: #880000 } /* Name.Constant */
+.highlight .nd { color: #AA22FF } /* Name.Decorator */
+.highlight .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #0000FF } /* Name.Function */
+.highlight .nl { color: #A0A000 } /* Name.Label */
+.highlight .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mb { color: #666666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666666 } /* Literal.Number.Float */
+.highlight .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #BB6688 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
+    </style>
+   </head>
+   <body>
+   <div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm">* </span>
+<span class="cm">* @package Sonar.app</span>
+<span class="cm">* @author Craig Simons &lt;craigsimons@sfu.ca&gt;</span>
+<span class="cm">* @module-attributes</span>
+<span class="cm">* @license Apache 2.0</span>
+<span class="cm">* </span>
+<span class="cm">* Sonar wraps the HTML5/Javascript </span><span class="cp">[</span><span class="nx">NDT</span><span class="cp">]</span><span class="cm">(https://code.google.com/p/ndt/wiki/NDTProtocol) client originally developed by </span><span class="cp">[</span><span class="nx">M</span><span class="na">-Lab</span><span class="cp">]</span><span class="cm">(http://www.measurementlab.net) into a more consistent and branded interface.</span>
+<span class="cm">* </span>
+<span class="cm">* This application uses the following libraries:</span>
+<span class="cm">* - </span><span class="cp">[</span><span class="nx">Twitter</span> <span class="nx">Bootstrap</span><span class="cp">]</span><span class="cm">(http://getbootstrap.com/)</span>
+<span class="cm">* - </span><span class="cp">[</span><span class="nx">jQuery</span><span class="cp">]</span><span class="cm">(https://jquery.com/)</span>
+<span class="cm">* - </span><span class="cp">[</span><span class="nx">canv</span><span class="na">-guage</span><span class="cp">]</span><span class="cm">(https://github.com/Mikhus/canv-gauge)</span>
+<span class="cm">* - </span><span class="cp">[</span><span class="nx">Raphael</span><span class="cp">]</span><span class="cm">(http://raphaeljs.com/)</span>
+<span class="cm">* - </span><span class="cp">[</span><span class="nx">morris.js</span><span class="cp">]</span><span class="cm">(http://morrisjs.github.io/morris.js/)</span>
+<span class="cm">* </span>
+<span class="cm">* Configuration and branding options can be found in the {@link Sonar.app.config} file. Module level parameters in this file should be left alone unless you really know what you are doing.</span>
+<span class="cm">*/</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} PHASE_LOADING</span>
+<span class="cm">* @constant</span>
+<span class="cm">* The loading phase, which is the initial phase set in the global variables.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">PHASE_LOADING</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} PHASE_WELCOME</span>
+<span class="cm">* @constant</span>
+<span class="cm">* Constant for when the user is on the welcome page.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">PHASE_WELCOME</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} PHASE_PREPARING</span>
+<span class="cm">* @constant</span>
+<span class="cm">* Constant for when the user has begun the test, but the {@link Sonar.client.NDTjs} object is waiting for the server to begin the test.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">PHASE_PREPARING</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} PHASE_UPLOAD</span>
+<span class="cm">* @constant</span>
+<span class="cm">* Constant for when the {@link Sonar.client.NDTjs} is conducting the upload portion of the test.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">PHASE_UPLOAD</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} PHASE_UPLOAD</span>
+<span class="cm">* @constant</span>
+<span class="cm">* Constant for when the {@link Sonar.client.NDTjs} is conducting the download portion of the test.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">PHASE_DOWNLOAD</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} PHASE_RESULTS</span>
+<span class="cm">* @constant</span>
+<span class="cm">* Constant for when the {@link Sonar.client.NDTjs} is finished testing and the results page is being show to the user.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">PHASE_RESULTS</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {Object} ndtClient</span>
+<span class="cm">* The currently instantiated {@link Sonar.client.NDTjs} object, which is global to the application.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">ndtClient</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} currentPhase</span>
+<span class="cm">* The current phase the application is in. This variable is referenced as a global variable in functions like {@link #startTest} and {@link #monitorTest}. </span>
+<span class="cm">* Valid states are defined as global constants (see {@link #PHASE_LOADING}, {@link #PHASE_WELCOME}, {@link #PHASE_PREPARING}, {@link #PHASE_UPLOAD}, {@link #PHASE_DOWNLOAD}, {@link #PHASE_RESULTS}).</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">currentPhase</span> <span class="o">=</span> <span class="nx">PHASE_LOADING</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} currentServer</span>
+<span class="cm">* The IP address/DNS name of the sonar server. This is selected by the user in the welcome page dropdown box and is taken from the address property of the {@link Sonar.app.config#serverList} item.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">currentServer</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} speedGauge</span>
+<span class="cm">* The initialized </span><span class="cp">[</span><span class="nx">HTML5</span> <span class="nx">Canvas</span> <span class="nx">Speed</span> <span class="nx">Gauge</span> <span class="nb">component</span><span class="cp">]</span><span class="cm">(https://github.com/Mikhus/canv-gauge).</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">speedGauge</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} resultsChart</span>
+<span class="cm">* The initialized </span><span class="cp">[</span><span class="nx">morris.js</span><span class="cp">]</span><span class="cm">(http://morrisjs.github.io/morris.js) chart component, which is used on the results page to show speed trending.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">resultsChart</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {integer} gaugeUpdateInterval</span>
+<span class="cm">* The id returned from the javascript setInterval function for gauge value updates.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">gaugeUpdateInterval</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {array(float)} uploadData</span>
+<span class="cm">* An array of upload test measurements. On each {@link #monitorTest} callback, the current reported value of the upload speed is pushed to this array. Later, in the results, this array can be analyzed for average/max/min speed as desired. This differs from the {@link Sonar.client.NDTjs} reported speed, which appears to simply be the last reported speed and not necessarily the one we wish to report.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">uploadData</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {array(float)} downloadData</span>
+<span class="cm">* An array of download test measurements. On each {@link #monitorTest} callback, the current reported value of the download speed is pushed to this array. Later, in the results, this array can be analyzed for average/max/min speed as desired. This differs from the {@link Sonar.client.NDTjs} reported speed, which appears to simply be the last reported speed and not necessarily the one we wish to report.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">downloadData</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The good ol&#39; jQuery document.ready handler. This runs once all page elements and scripts have loaded.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">init</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initialize the application for one or more speed tests. This should be run in the jQuery document.ready function.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c1">//: Test for IE 9 or lower and bounce right away as even the gauge won&#39;t initialize.</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">isIELessThan10</span><span class="p">())</span> <span class="p">{</span>
+		<span class="nx">showErrorWindow</span><span class="p">(</span><span class="s1">&#39;Incompatible Browser&#39;</span><span class="p">,</span> <span class="s1">&#39;You are running a version of Internet Explorer that is not supported. Please upgrade your browser or consider an alternative such as Chrome or Firefox.&#39;</span><span class="p">);</span>
+		<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">//: Write text titles and captions as per config</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#header-title&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">titleText</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#header-blurb&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">titleBlurb</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#welcome-title&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">welcomeTitle</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#welcome-blurb&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">welcomeBlurb</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#footer-text&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">footerText</span><span class="p">);</span>	
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#resultsTitleText&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">resultsTitleText</span><span class="p">);</span>
+
+	<span class="c1">//: show the BETA message if configured</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">showBetaMessage</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#beta-message h4&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">betaMessageTitle</span><span class="p">);</span>
+		<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#beta-message p&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">betaMessageText</span><span class="p">);</span>
+		<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#beta-message&#39;</span><span class="p">).</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;hide&#39;</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="c1">//: populate the server select box based on data from {@link Sonar.app.config#serverList}.</span>
+	<span class="nx">populateServers</span><span class="p">(</span><span class="s1">&#39;#serverList&#39;</span><span class="p">,</span> <span class="nx">serverList</span><span class="p">);</span>
+	<span class="nx">currentServer</span> <span class="o">=</span> <span class="nx">serverList</span><span class="cp">[</span><span class="nx">defaultServerIndex</span><span class="cp">]</span><span class="p">.</span><span class="nx">address</span><span class="p">;</span>
+
+	<span class="c1">//: Create the gauge and chart</span>
+	<span class="nx">speedGauge</span> <span class="o">=</span> <span class="nx">createGauge</span><span class="p">(</span><span class="s1">&#39;Throughput&#39;</span><span class="p">,</span> <span class="s1">&#39;speedGauge&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">gaugeMaxValue</span><span class="p">);</span>
+	<span class="nx">resultsChart</span> <span class="o">=</span> <span class="nx">createChart</span><span class="p">(</span><span class="nx">uploadData</span><span class="p">,</span> <span class="nx">downloadData</span><span class="p">);</span>
+	<span class="nx">resetGauge</span><span class="p">(</span><span class="nx">speedGauge</span><span class="p">);</span>
+
+	<span class="c1">//: Register click events for buttons and tabs</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#start&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="nx">startTest</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#testAgain&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">showPage</span><span class="p">(</span><span class="s1">&#39;welcome&#39;</span><span class="p">);</span> <span class="p">});</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;a</span><span class="cp">[</span><span class="nx">aria</span><span class="na">-controls</span><span class="o">=</span><span class="s2">&quot;chart&quot;</span><span class="cp">]</span><span class="s1">&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;shown.bs.tab&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>	<span class="nx">resultsChart</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span> <span class="p">});</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#serverList&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">currentServer</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span> <span class="p">});</span>
+
+	<span class="c1">//: Create a new instance of the NDT Client</span>
+	<span class="nx">setTestStatus</span><span class="p">(</span><span class="nx">loadingText</span><span class="p">);</span>
+	<span class="nx">ndtClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDTWrapper</span><span class="p">(</span><span class="nx">currentServer</span><span class="p">,</span> <span class="nx">monitorUpdateInterval</span><span class="p">);</span>
+
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Determines if the current user is using Internet Explorer for a browser, and if so, whether the version is less than version 10.</span>
+<span class="cm"> * Anything less than version 10 won&#39;t event initialize the test far enough to instantiate the {@link Sonar.client.NDTjs} object, which has it&#39;s own {@link Sonar.client.NDTjs#checkBrowserSupport} function to alert users about unsupported browsers.</span>
+<span class="cm"> * @return {boolean}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">isIELessThan10</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
+	<span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s2">&quot;&lt;!--[if lt IE 10]&gt;&lt;i&gt;&lt;/i&gt;&lt;![endif]--&gt;&quot;</span><span class="p">;</span>
+	<span class="kd">var</span> <span class="nx">isIELessThan10</span> <span class="o">=</span> <span class="p">(</span><span class="nx">div</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">).</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">isIELessThan10</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Writes HTML select options for the server dropdown box on the welcome page. </span>
+<span class="cm"> * It is expected the **servers** parameter is the {@link Sonar.app.config#serverList} array. Otherwise, the expected format should be:</span>
+<span class="cm"> * ```</span>
+<span class="cm"> * </span><span class="cp">[</span><span class="p">{</span>
+ <span class="o">*</span> 	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Server Name&#39;</span><span class="p">,</span>
+ <span class="o">*</span> 	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ip address/dns address&#39;</span>
+ <span class="o">*</span> <span class="p">}</span><span class="cp">]</span><span class="cm"></span>
+<span class="cm"> * ```</span>
+<span class="cm"> * @param {string} domId The element ID of the select element.</span>
+<span class="cm"> * @param {array(Object)} servers An array of server objects.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">populateServers</span><span class="p">(</span><span class="nx">domId</span><span class="p">,</span> <span class="nx">servers</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">domId</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">servers</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">options</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;&lt;option /&gt;&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">address</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">));</span>
+	<span class="p">});</span>
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Creates a </span><span class="cp">[</span><span class="nx">morris.js</span><span class="cp">]</span><span class="cm">(http://morrisjs.github.io/morris.js) chart component, which should be referenced globally via {@link #resultsChart}.</span>
+<span class="cm"> * Series data should have the following format:</span>
+<span class="cm"> * ```</span>
+<span class="cm"> * </span><span class="cp">[</span><span class="p">{</span>
+ <span class="o">*</span> 	<span class="nx">sample</span><span class="p">:</span> <span class="kt">integer</span><span class="p">,</span>
+ <span class="o">*</span> 	<span class="nx">upload</span><span class="p">:</span> <span class="nx">float</span><span class="p">,</span>
+ <span class="o">*</span> 	<span class="nx">download</span><span class="p">:</span> <span class="nx">float</span>
+ <span class="o">*</span> <span class="p">}</span><span class="cp">]</span><span class="cm"></span>
+<span class="cm"> * ```</span>
+<span class="cm"> * @return {Morris.Line}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">createChart</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">;</span>
+
+	<span class="kd">var</span> <span class="nx">chart</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Morris</span><span class="p">.</span><span class="nx">Line</span><span class="p">({</span>
+		<span class="nx">element</span><span class="o">:</span> <span class="s1">&#39;results-chart&#39;</span><span class="p">,</span>
+		<span class="nx">xkey</span><span class="o">:</span> <span class="s1">&#39;sample&#39;</span><span class="p">,</span>
+		<span class="nx">ykeys</span><span class="o">:</span> <span class="cp">[</span><span class="s1">&#39;upload&#39;</span><span class="p">,</span> <span class="s1">&#39;download&#39;</span><span class="cp">]</span><span class="p">,</span>
+		<span class="nx">labels</span><span class="o">:</span> <span class="cp">[</span><span class="s1">&#39;Upload Speed&#39;</span><span class="p">,</span> <span class="s1">&#39;Download Speed&#39;</span><span class="cp">]</span><span class="p">,</span>
+		<span class="nx">ymin</span><span class="o">:</span> <span class="s1">&#39;auto 0&#39;</span><span class="p">,</span>
+		<span class="nx">smooth</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+		<span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
+		<span class="nx">parseTime</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">resize</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+	<span class="p">});</span>
+
+	<span class="k">return</span> <span class="nx">chart</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Updates the supplied </span><span class="cp">[</span><span class="nx">morris.js</span> <span class="nx">line</span> <span class="nx">chart</span><span class="cp">]</span><span class="cm">(http://morrisjs.github.io/morris.js/) (which should be {@link #resultsChart} with {@link #uploadData upload} and {@link #downloadData download} data.</span>
+<span class="cm"> * @param {Morris.Line} chart The morris.js line chart object.</span>
+<span class="cm"> * @param {array(float)} uploadData</span>
+<span class="cm"> * @param {array(float)} downloadData</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">updateChartData</span><span class="p">(</span><span class="nx">chart</span><span class="p">,</span> <span class="nx">uploadData</span><span class="p">,</span> <span class="nx">downloadData</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">;</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">uploadData</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="nx">sample</span><span class="o">:</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">upload</span><span class="o">:</span> <span class="nx">uploadData</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">,</span> <span class="nx">download</span><span class="o">:</span> <span class="kc">null</span><span class="p">});</span>
+	<span class="p">}</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">downloadData</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">data</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">.</span><span class="nx">download</span> <span class="o">=</span> <span class="nx">downloadData</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">chart</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Creates a </span><span class="cp">[</span><span class="nx">canv</span><span class="na">-guage</span><span class="cp">]</span><span class="cm">(https://github.com/Mikhus/canv-gauge) instance, which is used as visual flare for users.</span>
+<span class="cm"> * Default values:</span>
+<span class="cm"> * - min: 0</span>
+<span class="cm"> * - max: 100</span>
+<span class="cm"> * - ticks: 10</span>
+<span class="cm"> * - units: Mb/s</span>
+<span class="cm"> * @param {string} title Title displayed inside gauge element</span>
+<span class="cm"> * @param {string} renderTo The DOM element target the gauge will render in.</span>
+<span class="cm"> * @param {integer} min (The minimum guage number) - likely to be 0.</span>
+<span class="cm"> * @param {integer} max The maximum gauge number (the fastest it can go)</span>
+<span class="cm"> * @param {integer} ticks The number of major gauge lines</span>
+<span class="cm"> * @param {integer} units The units used in the test</span>
+<span class="cm"> * @return {Gauge}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">createGauge</span><span class="p">(</span><span class="nx">title</span><span class="p">,</span> <span class="nx">renderTo</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">,</span> <span class="nx">ticks</span><span class="p">,</span> <span class="nx">units</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// default values</span>
+	<span class="nx">min</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">min</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">min</span><span class="p">;</span>
+	<span class="nx">max</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">max</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="mi">100</span> <span class="o">:</span> <span class="nx">max</span><span class="p">;</span>
+	<span class="nx">ticks</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">ticks</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="mi">10</span> <span class="o">:</span> <span class="nx">ticks</span><span class="p">;</span>
+	<span class="nx">units</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">units</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;Mb/s&#39;</span> <span class="o">:</span> <span class="nx">units</span><span class="p">;</span>	
+
+	<span class="kd">var</span> <span class="nx">gaugeValues</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">;</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">ticks</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">gaugeValues</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="nx">max</span> <span class="o">*</span> <span class="nx">i</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">gauge</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Gauge</span><span class="p">({</span>
+		<span class="nx">renderTo</span>	<span class="o">:</span> <span class="nx">renderTo</span><span class="p">,</span>
+		<span class="nx">width</span>       <span class="o">:</span> <span class="mi">350</span><span class="p">,</span>
+		<span class="nx">height</span>      <span class="o">:</span> <span class="mi">350</span><span class="p">,</span>
+		<span class="nx">units</span>       <span class="o">:</span> <span class="nx">units</span><span class="p">,</span>
+		<span class="nx">title</span>       <span class="o">:</span> <span class="nx">title</span><span class="p">,</span>
+		<span class="nx">minValue</span>    <span class="o">:</span> <span class="nx">min</span><span class="p">,</span>
+		<span class="nx">maxValue</span>    <span class="o">:</span> <span class="nx">max</span><span class="p">,</span>
+		<span class="nx">majorTicks</span>  <span class="o">:</span> <span class="nx">gaugeValues</span><span class="p">,</span>
+		<span class="nx">highlights</span>  <span class="o">:</span> <span class="cp">[</span><span class="p">{</span> <span class="nx">from</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="k">to</span><span class="p">:</span> <span class="k">max</span><span class="p">,</span> <span class="nx">color</span><span class="p">:</span> <span class="s1">&#39;rgb(0, 255, 0)&#39;</span> <span class="p">}</span><span class="cp">]</span>
+	<span class="p">});</span>
+
+	<span class="k">return</span> <span class="nx">gauge</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Updates the supplied </span><span class="cp">[</span><span class="nx">canv</span><span class="na">-guage</span><span class="cp">]</span><span class="cm">(https://github.com/Mikhus/canv-gauge) object (which should correspond to {@link #speedGuage}) with the latest data. </span>
+<span class="cm"> * This function also adds the last reported {@link #uploadData upload} {@link #downloadData download} to their respective global arrays.</span>
+<span class="cm"> * @param {Gauge} gaugeElement </span>
+<span class="cm"> * @param {float} uploadData</span>
+<span class="cm"> * @param {float} downloadData</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">updateTestValue</span><span class="p">(</span><span class="nx">gaugeElement</span><span class="p">,</span> <span class="nx">uploadData</span><span class="p">,</span> <span class="nx">downloadData</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">currentPhase</span> <span class="o">==</span> <span class="nx">PHASE_UPLOAD</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">speed</span> <span class="o">=</span> <span class="nx">getNDTUploadSpeed</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+		<span class="nx">gaugeElement</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">speed</span><span class="p">);</span>
+		<span class="nx">uploadData</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">speed</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">currentPhase</span> <span class="o">==</span> <span class="nx">PHASE_DOWNLOAD</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">speed</span> <span class="o">=</span> <span class="nx">getNDTDownloadSpeed</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+		<span class="nx">gaugeElement</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="nx">speed</span><span class="p">);</span>
+		<span class="nx">downloadData</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">speed</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">clearInterval</span><span class="p">(</span><span class="nx">gaugeUpdateInterval</span><span class="p">);</span>  
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Resets the speed gauge with defaults and zeroes the value. Supplied element should be {@link #speedGauge}.</span>
+<span class="cm"> * @param {Gauge} element </span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">resetGauge</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">gaugeConfig</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">;</span>
+
+	<span class="nx">element</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="nx">gaugeConfig</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+		<span class="nx">from</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">to</span><span class="o">:</span> <span class="nx">gaugeMaxValue</span><span class="p">,</span> <span class="nx">color</span><span class="o">:</span> <span class="s1">&#39;rgb(0, 255, 0)&#39;</span>
+	<span class="p">});</span>
+	<span class="nx">element</span><span class="p">.</span><span class="nx">updateConfig</span><span class="p">({</span>
+		<span class="nx">highlights</span><span class="o">:</span> <span class="nx">gaugeConfig</span>
+	<span class="p">});</span>
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Resets any existing data/objects and executes an NDT test as defined in {@Sonar.client.NDTWrapper}.</span>
+<span class="cm"> * @param {jQuery} e Event element</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">startTest</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">//: Stop event propagation</span>
+	<span class="nx">e</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
+	<span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+
+	<span class="c1">//: Create a new instance of NDTjs and reset any counters.</span>
+	<span class="nx">ndtClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDTWrapper</span><span class="p">(</span><span class="nx">currentServer</span><span class="p">,</span> <span class="nx">monitorUpdateInterval</span><span class="p">);</span>
+	<span class="nx">resetGauge</span><span class="p">(</span><span class="nx">speedGauge</span><span class="p">);</span>	
+
+	<span class="c1">//: Use the NDTjs function for browser compatibility and bounce if needed.</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">checkBrowserSupport</span><span class="p">())</span> <span class="p">{</span>
+		<span class="nx">showErrorWindow</span><span class="p">(</span><span class="s1">&#39;Incompatible Browser&#39;</span><span class="p">,</span> <span class="s1">&#39;Your browser does not appear have full HTML5 support for Websockets and/or Workers. Please try again with a different browser (Chrome 4+, Safari 4+, IE 10+, Firefox 38+.&#39;</span><span class="p">);</span>
+		<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">//: Set the current phase and some initial variables</span>
+	<span class="nx">currentPhase</span> <span class="o">=</span> <span class="nx">PHASE_WELCOME</span><span class="p">;</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#currentServer&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">currentServer</span><span class="p">);</span>
+	<span class="nx">showPage</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+
+	<span class="c1">//: Run the simulation if configured in {@link Sonar.app.config}.</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">simulateTest</span><span class="p">();</span>
+	<span class="p">}</span>
+
+	<span class="c1">//: Run the test and setup monitoring callback.</span>
+	<span class="nx">ndtClient</span><span class="p">.</span><span class="nx">run_test</span><span class="p">();</span>
+	<span class="nx">monitorTest</span><span class="p">();</span>
+
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Using the {@Sonar.client.NDTjs#checkBrowserSupport} function, returns the best guess on whether the user&#39;s browser will support the required HTML5 technologies.</span>
+<span class="cm"> * @return {boolean}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">checkBrowserSupport</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="k">try</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">ndt</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDTjs</span><span class="p">();</span>
+		<span class="nx">result</span> <span class="o">=</span> <span class="nx">ndt</span><span class="p">.</span><span class="nx">checkBrowserSupport</span><span class="p">();</span>
+	<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kc">true</span><span class="p">;</span>	
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Quick and dirty method for simulating an actual test with actually sending any data. More for testing UI components, but may be considered obsolete.</span>
+<span class="cm"> * The configuration attribute {@link Sonar.app.config#simulate} can be changed to force simulated tests.</span>
+<span class="cm"> * @deprecated</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">simulateTest</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_PREPARING</span><span class="p">);</span>
+	<span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> <span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_UPLOAD</span><span class="p">)</span> <span class="p">},</span> <span class="mi">2000</span><span class="p">);</span>
+	<span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> <span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_DOWNLOAD</span><span class="p">)</span> <span class="p">},</span> <span class="mi">4000</span><span class="p">);</span>
+	<span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> <span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_RESULTS</span><span class="p">)</span> <span class="p">},</span> <span class="mi">6000</span><span class="p">);</span>
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The callback function run according to the configured {@link Sonar.app.config#monitorUpdateInterval monitorUpdateInterval}. How the test proceeds (via {@link #setPhase}) is determined by the returned {@link #getNDTError} and {@link #getNDTStatus} results.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">monitorTest</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">getNDTError</span><span class="p">();</span>
+	<span class="kd">var</span> <span class="nx">currentStatus</span> <span class="o">=</span> <span class="nx">getNDTStatus</span><span class="p">();</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/not run/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">currentPhase</span> <span class="o">!=</span> <span class="nx">PHASE_LOADING</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_WELCOME</span><span class="p">);</span>
+		<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/completed/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">currentPhase</span> <span class="o">&lt;</span> <span class="nx">PHASE_RESULTS</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_RESULTS</span><span class="p">);</span>
+		<span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">message</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/failed/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">currentPhase</span> <span class="o">&lt;</span> <span class="nx">PHASE_RESULTS</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_RESULTS</span><span class="p">);</span>
+		<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">currentStatus</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/Outbound/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">currentPhase</span> <span class="o">&lt;</span> <span class="nx">PHASE_UPLOAD</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_UPLOAD</span><span class="p">);</span>
+	<span class="p">}</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">currentStatus</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/Inbound/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">currentPhase</span> <span class="o">&lt;</span> <span class="nx">PHASE_DOWNLOAD</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_DOWNLOAD</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">currentStatus</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/Middleboxes/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">currentStatus</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/notStarted/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">getNDTRemoteServer</span><span class="p">().</span><span class="nx">match</span><span class="p">(</span><span class="sr">/ndt/</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">currentPhase</span> <span class="o">==</span> <span class="nx">PHASE_PREPARING</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">debug</span><span class="p">(</span><span class="s2">&quot;Remote server is &quot;</span> <span class="o">+</span> <span class="nx">getNDTRemoteServer</span><span class="p">());</span>
+		<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_UPLOAD</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">getNDTRemoteServer</span><span class="p">()</span> <span class="o">!==</span> <span class="s1">&#39;unknown&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">currentPhase</span> <span class="o">&lt;</span> <span class="nx">PHASE_PREPARING</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setPhase</span><span class="p">(</span><span class="nx">PHASE_PREPARING</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="nx">setTimeout</span><span class="p">(</span><span class="nx">monitorTest</span><span class="p">,</span> <span class="nx">monitorUpdateInterval</span><span class="p">);</span>
+
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Sets the application current page, which is actually just a hidden Bootstrap tab.</span>
+<span class="cm"> * @param {string} tab The name/id of the page. Don&#39;t prefix with &#39;#&#39;</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">showPage</span><span class="p">(</span><span class="nx">tab</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#pages a</span><span class="cp">[</span><span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&#39; + tab + &#39;&quot;</span><span class="cp">]</span><span class="s1">&#39;</span><span class="p">).</span><span class="nx">tab</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">);</span>
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Updates the test page header with an indication of whats currently happening. The actual message displayed can be configured by {@link Sonar.app.config#loadingText loadingText}, {@link Sonar.app.config#uploadTestText uploadTestText}, and {@link Sonar.app.config#downloadTestText downloadTestText}.</span>
+<span class="cm"> * ** Note: A DOM element matching ***#test-status h2*** must be present for any message to be written. **</span>
+<span class="cm"> * @param {string} message The message/title to be displayed.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">setTestStatus</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#test-status h2&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Shows a Bootstrap modal window notifying the user that an error has occurred. </span>
+<span class="cm"> * ** Note: Requires the presences of an &#39;#errorWindow&#39; element that is constructed as per </span><span class="cp">[</span><span class="nx">Bootstrap</span> <span class="nx">examples</span><span class="cp">]</span><span class="cm">(http://getbootstrap.com/javascript/#modals).</span>
+<span class="cm"> * @param {string} title The title of the dialog box.</span>
+<span class="cm"> * @param {string} message The dialog box main message.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">showErrorWindow</span><span class="p">(</span><span class="nx">title</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#errorWindow .modal-title&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">title</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#errorWindow .modal-body&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#errorWindow&quot;</span><span class="p">).</span><span class="nx">modal</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the current status of the {@link Sonar.client.NDTjs} server connection.</span>
+<span class="cm"> * @return {string}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTStatus</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">ndtClient</span><span class="p">.</span><span class="nx">get_status</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the current error condition of the {@link Sonar.client.NDTjs} server connection.</span>
+<span class="cm"> * @return {string}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTError</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">ndtClient</span><span class="p">.</span><span class="nx">get_errmsg</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the current server host address through the {@link Sonar.client.NDTjs} object.</span>
+<span class="cm"> * @return {string}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTRemoteServer</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span> 
+		<span class="k">return</span> <span class="s1">&#39;0.0.0.0&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">ndtClient</span><span class="p">.</span><span class="nx">get_host</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the theoretical speed limit (pcBuffSpdLimit).</span>
+<span class="cm"> * @return {float}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTSpeedLimit</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span> 
+		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ndtClient</span><span class="p">.</span><span class="nx">get_PcBuffSpdLimit</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the average round trip time.</span>
+<span class="cm"> * @return {float}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTAverageRoundTrip</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span> 
+		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ndtClient</span><span class="p">.</span><span class="nx">getNDTvar</span><span class="p">(</span><span class="s2">&quot;avgrtt&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get last reported upload speed.</span>
+<span class="cm"> * @param {boolean} raw True to return the uncast speed value (aka not parsed as a float).</span>
+<span class="cm"> * @return {float}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTUploadSpeed</span><span class="p">(</span><span class="nx">raw</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span> 
+		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="kd">var</span> <span class="nx">speed</span> <span class="o">=</span> <span class="nx">ndtClient</span><span class="p">.</span><span class="nx">getNDTvar</span><span class="p">(</span><span class="s2">&quot;ClientToServerSpeed&quot;</span><span class="p">);</span>
+	<span class="k">return</span> <span class="nx">raw</span> <span class="o">?</span> <span class="nx">speed</span> <span class="o">:</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">speed</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get last reported download speed.</span>
+<span class="cm"> * @return {float}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTDownloadSpeed</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span> 
+		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ndtClient</span><span class="p">.</span><span class="nx">getNDTvar</span><span class="p">(</span><span class="s2">&quot;ServerToClientSpeed&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the maximum value in the supplied array.</span>
+<span class="cm"> * @param array(float) data An array of float values</span>
+<span class="cm"> * @return {float}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getPeakSpeed</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nb">Math</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the computed jitter as per the {@link Sonar.client.NDTjs} object.</span>
+<span class="cm"> * @return {float}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTJitter</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span> 
+		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">ndtClient</span><span class="p">.</span><span class="nx">getNDTvar</span><span class="p">(</span><span class="s2">&quot;Jitter&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the requested NDT test server variable {@link Sonar.client.NDTjs} object.</span>
+<span class="cm"> * @param {string} variable Property name</span>
+<span class="cm"> * @return {mixed}</span>
+<span class="cm"> */</span>	
+<span class="kd">function</span> <span class="nx">getNDTVar</span><span class="p">(</span><span class="nx">variable</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="nx">ndtClient</span><span class="p">.</span><span class="nx">getNDTvar</span><span class="p">(</span><span class="nx">variable</span><span class="p">);</span>
+	<span class="k">return</span> <span class="o">!</span><span class="nx">ret</span> <span class="o">?</span> <span class="s2">&quot;-&quot;</span> <span class="o">:</span> <span class="nx">ret</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Shortcut function to return a &#39;-&#39; if the supplied value is not a number.</span>
+<span class="cm"> * @param {string} value </span>
+<span class="cm"> * @return {mixed}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nb">isNaN</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">?</span> <span class="s2">&quot;-&quot;</span> <span class="o">:</span> <span class="nx">value</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the calculated jitter with an appropriate time suffix (msec or sec);</span>
+<span class="cm"> * @return {string}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">getFormattedJitterValue</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">jitter</span> <span class="o">=</span> <span class="nx">getNDTJitter</span><span class="p">();</span>
+	<span class="k">return</span> <span class="p">(</span><span class="nx">jitter</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">?</span> <span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">jitter</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; sec&#39;</span> <span class="o">:</span> <span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">jitter</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; msec&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the calculated packet loss as a percentage to 2 decimal places.</span>
+<span class="cm"> * @return {float}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">getFormattedPacketLossValue</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">packetLoss</span> <span class="o">=</span> <span class="nb">parseFloat</span><span class="p">(</span><span class="nx">ndtClient</span><span class="p">.</span><span class="nx">getNDTvar</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">));</span>
+	<span class="nx">packetLoss</span> <span class="o">=</span> <span class="p">(</span><span class="nx">packetLoss</span><span class="o">*</span><span class="mi">100</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+	<span class="k">return</span> <span class="nx">packetLoss</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The main decision function of the application. Depending on the supplied phase, a switch case will apply and logic will happen. Very deep stuff.</span>
+<span class="cm"> * @todo Move each decision point in the switch tree to it&#39;s own function.</span>
+<span class="cm"> * @param {string} phase The current phase constant. Supplied value will become the {@link #currentPhase}.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">setPhase</span><span class="p">(</span><span class="nx">phase</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">switch</span> <span class="p">(</span><span class="nx">phase</span><span class="p">)</span> <span class="p">{</span>
+		<span class="c1">//: Handle PHASE_WELCOME</span>
+		<span class="k">case</span> <span class="nx">PHASE_WELCOME</span><span class="o">:</span>
+			<span class="nx">debug</span><span class="p">(</span><span class="s2">&quot;WELCOME&quot;</span><span class="p">);</span>
+			<span class="nx">showPage</span><span class="p">(</span><span class="s1">&#39;welcome&#39;</span><span class="p">);</span>
+			<span class="k">break</span><span class="p">;</span>
+
+		<span class="c1">//: Handle PHASE_PREPARING</span>
+		<span class="k">case</span> <span class="nx">PHASE_PREPARING</span><span class="o">:</span>
+			<span class="nx">speedGauge</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+			<span class="c1">//downloadGauge.setValue(0);</span>
+			<span class="nx">debug</span><span class="p">(</span><span class="s2">&quot;PREPARING TEST&quot;</span><span class="p">);</span>
+			<span class="nx">setTestStatus</span><span class="p">(</span><span class="nx">loadingText</span><span class="p">);</span>
+			<span class="k">break</span><span class="p">;</span>
+
+		<span class="c1">//: Handle PHASE_UPLOAD</span>
+		<span class="k">case</span> <span class="nx">PHASE_UPLOAD</span><span class="o">:</span>	
+			<span class="nx">debug</span><span class="p">(</span><span class="s2">&quot;UPLOAD TEST&quot;</span><span class="p">);</span>
+			<span class="kd">var</span> <span class="nx">pcBuffSpdLimit</span> <span class="o">=</span> <span class="nx">getNDTSpeedLimit</span><span class="p">();</span>
+			<span class="kd">var</span> <span class="nx">rtt</span> <span class="o">=</span> <span class="nx">getNDTAverageRoundTrip</span><span class="p">();</span>
+			<span class="kd">var</span> <span class="nx">gaugeConfig</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">;</span>
+
+			<span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">rtt</span><span class="p">))</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#rttValue&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;n/a&quot;</span><span class="p">);</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#rttValue&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">printNumberValue</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">rtt</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; ms&quot;</span><span class="p">);</span>
+			<span class="p">}</span>
+
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">pcBuffSpdLimit</span><span class="p">))</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">pcBuffSpdLimit</span> <span class="o">&gt;</span> <span class="nx">gaugeMaxValue</span><span class="p">)</span> <span class="p">{</span>
+				  <span class="nx">pcBuffSpdLimit</span> <span class="o">=</span> <span class="nx">gaugeMaxValue</span><span class="p">;</span> 
+				<span class="p">}</span>
+				<span class="nx">gaugeConfig</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+					<span class="nx">from</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>   
+					<span class="nx">to</span><span class="o">:</span> <span class="nx">pcBuffSpdLimit</span><span class="p">,</span> 
+					<span class="nx">color</span><span class="o">:</span> <span class="s1">&#39;rgb(0, 255, 0)&#39;</span>
+				<span class="p">});</span>
+
+				<span class="nx">gaugeConfig</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+					<span class="nx">from</span><span class="o">:</span> <span class="nx">pcBuffSpdLimit</span><span class="p">,</span> 
+					<span class="nx">to</span><span class="o">:</span> <span class="nx">gaugeMaxValue</span><span class="p">,</span> 
+					<span class="nx">color</span><span class="o">:</span> <span class="s1">&#39;rgb(255, 0, 0)&#39;</span>
+				<span class="p">});</span>
+
+				<span class="nx">uploadGauge</span><span class="p">.</span><span class="nx">updateConfig</span><span class="p">({</span> 
+					<span class="nx">highlights</span><span class="o">:</span> <span class="nx">gaugeConfig</span>
+				<span class="p">});</span>
+
+				<span class="nx">downloadGauge</span><span class="p">.</span><span class="nx">updateConfig</span><span class="p">({</span> 
+					<span class="nx">highlights</span><span class="o">:</span> <span class="nx">gaugeConfig</span>
+				<span class="p">});</span>
+			<span class="p">}</span>
+
+			<span class="nx">setTestStatus</span><span class="p">(</span><span class="nx">uploadTestText</span><span class="p">);</span>
+			<span class="nx">resetGauge</span><span class="p">(</span><span class="nx">speedGauge</span><span class="p">);</span>
+
+			<span class="nx">gaugeUpdateInterval</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+					<span class="nx">updateTestValue</span><span class="p">(</span><span class="nx">speedGauge</span><span class="p">,</span> <span class="nx">uploadData</span><span class="p">,</span> <span class="nx">downloadData</span><span class="p">);</span>
+				<span class="p">},</span><span class="nx">monitorUpdateInterval</span><span class="p">);</span>
+
+			<span class="c1">//: Set the remote server text</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#remoteAddress&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTRemoteServer</span><span class="p">());</span>
+			<span class="k">break</span><span class="p">;</span>
+
+		<span class="c1">//: Handle PHASE_DOWNLOAD</span>
+		<span class="k">case</span> <span class="nx">PHASE_DOWNLOAD</span><span class="o">:</span>
+			<span class="nx">debug</span><span class="p">(</span><span class="s1">&#39;DOWNLOAD TEST&#39;</span><span class="p">);</span>
+			<span class="nx">setTestStatus</span><span class="p">(</span><span class="nx">downloadTestText</span><span class="p">);</span>
+			<span class="k">break</span><span class="p">;</span>
+
+		<span class="c1">//: Handle PHASE_RESULTS</span>
+		<span class="k">case</span> <span class="nx">PHASE_RESULTS</span><span class="o">:</span>
+			<span class="nx">debug</span><span class="p">(</span><span class="s1">&#39;SHOW RESULTS&#39;</span><span class="p">);</span>
+			<span class="nx">debug</span><span class="p">(</span><span class="s1">&#39;Testing complete&#39;</span><span class="p">);</span>
+
+			<span class="c1">//: Get download speed</span>
+			<span class="kd">var</span> <span class="nx">downloadSpeed</span> <span class="o">=</span> <span class="nx">getPeakSpeed</span><span class="p">(</span><span class="nx">downloadData</span><span class="p">);</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">downloadSpeed</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#download-speed&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">downloadSpeed</span><span class="o">/</span><span class="mi">1000</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#download-speed-units&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;gb/s&#39;</span><span class="p">);</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#download-speed&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">downloadSpeed</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#download-speed-units&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;mb/s&#39;</span><span class="p">);</span>
+			<span class="p">}</span>
+
+			<span class="c1">//: Get upload speed</span>
+			<span class="kd">var</span> <span class="nx">uploadSpeed</span> <span class="o">=</span> <span class="nx">getPeakSpeed</span><span class="p">(</span><span class="nx">uploadData</span><span class="p">);</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">uploadSpeed</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#upload-speed&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">uploadSpeed</span><span class="o">/</span><span class="mi">1000</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#upload-speed-units&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;gb/s&#39;</span><span class="p">);</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#upload-speed&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">uploadSpeed</span><span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#upload-speed-units&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;mb/s&#39;</span><span class="p">);</span>
+			<span class="p">}</span>
+
+			<span class="c1">//: get Jitter</span>
+			<span class="kd">var</span> <span class="nx">jitter</span> <span class="o">=</span> <span class="nx">getNDTJitter</span><span class="p">();</span>
+			<span class="nx">jitterValue</span> <span class="o">=</span> <span class="p">(</span><span class="nx">jitter</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">?</span> <span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">jitter</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; sec&#39;</span> <span class="o">:</span> <span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">jitter</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; msec&#39;</span><span class="p">;</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#jitter&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">jitterValue</span><span class="p">);</span>
+
+			<span class="c1">//: Other stats</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#latency&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">printNumberValue</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">getNDTAverageRoundTrip</span><span class="p">())));</span> 
+			<span class="nx">writeTestDetails</span><span class="p">();</span>
+			<span class="nx">writeTestDiagnosis</span><span class="p">();</span>
+
+			<span class="nx">updateChartData</span><span class="p">(</span><span class="nx">resultsChart</span><span class="p">,</span> <span class="nx">uploadData</span><span class="p">,</span> <span class="nx">downloadData</span><span class="p">);</span>
+
+			<span class="nx">showPage</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">);</span>
+			<span class="k">break</span><span class="p">;</span>
+
+		<span class="k">default</span><span class="o">:</span>
+			<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">//: Set the {@link #currentPhase} to the supplied phase variable.</span>
+	<span class="nx">currentPhase</span> <span class="o">=</span> <span class="nx">phase</span><span class="p">;</span>
+	<span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Writes the test details via jQuery .text() function. This method of creating results is perhaps not very elegant as it relies on precise DOM element ids, but at least its independent of the ui as given in index.html.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">writeTestDetails</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c1">//: Return nothing if we&#39;re only simluating a test.</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">//: write test results to dom elements.</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsOperatingSystem&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;OperatingSystem&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsPluginVersion&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;PluginVersion&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span> <span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;OsArchitecture&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsCurRwinRcvd&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;CurRwinRcvd&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsMaxRwinRcvd&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;MaxRwinRcvd&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsCurRTO&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;CurRTO&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsPacketLoss&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getFormattedPacketLossValue</span><span class="p">());</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsMinRTT&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;MinRTT&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsMaxRTT&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;MaxRTT&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsAvgRTT&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">printNumberValue</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">getNDTAverageRoundTrip</span><span class="p">())));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsJitter&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getFormattedJitterValue</span><span class="p">());</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsSACKsRcvd&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;SACKsRcvd&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsWaitSec&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;waitsec&#39;</span><span class="p">));</span>
+
+	<span class="c1">// diagnosis</span>
+	<span class="kd">var</span> <span class="nx">mismatchTest</span> <span class="o">=</span> <span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s2">&quot;mismatch&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;&lt;div class=&quot;alert alert-success&quot; role=&quot;alert&quot;&gt;A duplex mismatch condition was detected.&lt;/div&gt;&#39;</span> <span class="o">:</span> <span class="s1">&#39;&lt;span class=&quot;text-success&quot;&gt;No duplex mismatch condition was detected.&lt;/span&gt;&#39;</span><span class="p">;</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsMismatch&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">mismatchTest</span><span class="p">);</span>
+
+	<span class="kd">var</span> <span class="nx">cableFaultTest</span> <span class="o">=</span> <span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s2">&quot;bad_cable&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;&lt;div class=&quot;alert alert-success&quot; role=&quot;alert&quot;&gt;The test detected a cable fault.&lt;/div&gt;&#39;</span> <span class="o">:</span> <span class="s1">&#39;&lt;span class=&quot;text-success&quot;&gt;The test did not detect a cable fault.&lt;/span&gt;&#39;</span><span class="p">;</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsCableFault&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">cableFaultTest</span><span class="p">);</span>
+
+	<span class="kd">var</span> <span class="nx">congestionTest</span> <span class="o">=</span> <span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s2">&quot;congestion&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;&lt;div class=&quot;alert alert-success&quot; role=&quot;alert&quot;&gt;Network congestion may be limiting the connection.&lt;/div&gt;&#39;</span> <span class="o">:</span> <span class="s1">&#39;&lt;span class=&quot;text-success&quot;&gt;No network congestion was detected.&lt;/span&gt;&#39;</span><span class="p">;</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsCongestion&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">congestionTest</span><span class="p">);</span>
+
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsCwndtime&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;cwndtime&#39;</span><span class="p">)));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsRwndtime&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;rwintime&#39;</span><span class="p">)));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsOptimalRcvrBuffer&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">printNumberValue</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;optimalRcvrBuffer&#39;</span><span class="p">)));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsBottleneck&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;accessTech&#39;</span><span class="p">));</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#detailsDupAcksIn&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">getNDTVar</span><span class="p">(</span><span class="s1">&#39;DupAcksIn&#39;</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Unlike {@link #writeTestDetails}, this function creates markup directly (a bootstrap themed table). Strictly speaking, Bootstrap isn&#39;t required in the UI, but its designed for it.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">writeTestDiagnosis</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">simulate</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">fullResults</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">parseJSON</span><span class="p">(</span><span class="nx">ndtClient</span><span class="p">.</span><span class="nx">get_diagnosis</span><span class="p">());</span>
+	<span class="kd">var</span> <span class="nx">markup</span> <span class="o">=</span> <span class="s1">&#39;&lt;table class=&quot;table table-striped table-condensed&quot;&gt;&lt;tbody&gt;&#39;</span><span class="p">;</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">fullResults</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">fullResults</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span> <span class="p">{</span>
+			<span class="nx">markup</span> <span class="o">+=</span> <span class="s1">&#39;&lt;tr&gt;&lt;td class=&quot;details-property&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&lt;/td&gt;&lt;td class=&quot;details-value&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">fullResults</span><span class="cp">[</span><span class="nx">key</span><span class="cp">]</span> <span class="o">+</span> <span class="s2">&quot;&lt;/td&gt;&lt;/tr&gt;\n&quot;</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">markup</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/tbody&gt;&lt;table&gt;&quot;</span><span class="p">;</span>
+
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#advanced&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">markup</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Writes to console.log if {@link Sonar.app.config#allowDebug} is true.</span>
+<span class="cm"> * @param {string} message The debug message.</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">debug</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">allowDebug</span> <span class="o">&amp;&amp;</span> <span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+   </body>
+</html>
