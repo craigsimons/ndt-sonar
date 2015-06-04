@@ -128,11 +128,14 @@ function init() {
 	}
 
 	//: Write text titles and captions as per config
-	$('#header-title').html(titleText);
-	$('#header-blurb').html(titleBlurb);
-	$('#welcome-title').html(welcomeTitle);
-	$('#welcome-blurb').html(welcomeBlurb);
-	$('#footer-text').html(footerText);	
+	if (useDynamicText) {
+		$('#header-title').html(titleText);
+		$('#header-blurb').html(titleBlurb);
+		$('#welcome-title').html(welcomeTitle);
+		$('#welcome-blurb').html(welcomeBlurb);
+		$('#footer-text').html(footerText);	
+	}
+
 	$('#resultsTitleText').html(resultsTitleText);
 
 	//: show the BETA message if configured
@@ -226,6 +229,14 @@ function createChart() {
 		data: data,
 		parseTime: false,
 		resize: true,
+		hoverCallback: function (index, options, content, row) {
+			var markup = '<div class="morris-hover-point" style="color: #0b62a4">';
+			markup += '  Upload Speed: <span style="color: black;">' + parseFloat(row.upload).toFixed(1) + '</span>';
+			markup += '</div><div class="morris-hover-point" style="color: #7A92A">';
+			markup += '  Download Speed: <span style="color: black;">' + parseFloat(row.download).toFixed(1) + '</span>';
+			markup += '</div>';
+			return markup;
+		}
 	});
 
 	return chart;
@@ -335,6 +346,17 @@ function resetGauge(element) {
 }
 
 /**
+ * Resets the results chart and zeroes the values. Supplied element should be {@link #resultsChart}.
+ * @param {Gauge} element 
+ * @return {null}
+ */
+function resetChart(element) {
+	downloadData = [];
+	uploadData = [];
+	return null;
+}
+
+/**
  * Resets any existing data/objects and executes an NDT test as defined in {@Sonar.client.NDTWrapper}.
  * @param {jQuery} e Event element
  * @return {null}
@@ -347,6 +369,7 @@ function startTest(e) {
 	//: Create a new instance of NDTjs and reset any counters.
 	ndtClient = new NDTWrapper(currentServer, monitorUpdateInterval);
 	resetGauge(speedGauge);	
+	resetChart(resultsChart);
 
 	//: Use the NDTjs function for browser compatibility and bounce if needed.
 	if (!checkBrowserSupport()) {

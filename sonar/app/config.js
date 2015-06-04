@@ -10,18 +10,6 @@
 */
 
 /**
-* @cfg {boolean} simulate
-* True if we want to run a fake test that does not send any data to an NDT server.
-*/
-var simulate = false;
-
-/**
-* @cfg {boolean} allowDebug
-* True to write more verbose data to console.log. ** Note: If using the Javascript console on your browser, the NDT results will be drastically lower. **
-*/
-var allowDebug = false;
-
-/**
 * @cfg {array(Object)} allowDebug
 * The list of servers we will allow the client to connect to. The structure of the object array needs to be in the following format:
 * ```
@@ -32,15 +20,54 @@ var allowDebug = false;
 * ```
 */
 var serverList = [{
-	name: 'Burnaby',
-	address: 'bby-sonar.sfu.ca'
+	name: 'Calgary (M-Lab)',
+	address: 'ndt.iupui.mlab1.yyc01.measurement-lab.org'
 }, {
-	name: 'Surrey',
-	address: 'sry-sonar.sfu.ca'
+	name: 'London (M-Lab)',
+	address: 'ndt.iupui.mlab1.lhr01.measurement-lab.org'
 }, {
-	name: 'Vancouver',
-	address: 'van-sonar.sfu.ca'			
+	name: 'Japan (M-Lab)',
+	address: 'ndt.iupui.mlab1.hnd01.measurement-lab.org'			
+}, {
+	name: 'New York (M-Lab)',
+	address: 'ndt.iupui.mlab1.lga04.measurement-lab.org'
+}, {
+	name: 'Paris (M-Lab)',
+	address: 'ndt.iupui.mlab1.par01.measurement-lab.org'		
+}, {
+	name: 'San Fransciso (M-Lab)',
+	address: 'ndt.iupui.mlab1.nuq03.measurement-lab.org'		
+}, {
+	name: 'Seattle (M-Lab)',
+	address: 'ndt.iupui.mlab1.sea01.measurement-lab.org'
+}, {
+	name: 'Stockholm (M-Lab)',
+	address: 'ndt.iupui.mlab1.arn01.measurement-lab.org'
+}, {
+	name: 'Sydney (M-Lab)',
+	address: 'ndt.iupui.mlab1.syd01.measurement-lab.org'		
+}, {
+	name: 'Toronto (M-Lab)',
+	address: 'ndt.iupui.mlab1.yyz01.measurement-lab.org'	
 }];
+
+/**
+* @cfg {boolean} allowDebug
+* True to overwrite the default HTML coded values **
+*/
+var useDynamicText = true;
+
+/**
+* @cfg {boolean} simulate
+* True if we want to run a fake test that does not send any data to an NDT server.
+*/
+var simulate = false;
+
+/**
+* @cfg {boolean} allowDebug
+* True to write more verbose data to console.log. ** Note: If using the Javascript console on your browser, the NDT results will be drastically lower. **
+*/
+var allowDebug = false;
 
 /**
 * @cfg {string} titleText
@@ -86,7 +113,7 @@ var welcomeTitle = "NDT Speed Test"
 * The main description on the welcome page.
 * ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#welcome-blurb DOM*** element on index.html. **
 */
-var welcomeBlurb = 'The Network Diagnostic Tool (NDT) provides a sophisticated speed and diagnostic test. An NDT test reports more than just the upload and download speeds — it also attempts to determine what, if any, problems limited these speeds, differentiating between computer configuration and network infrastructure problems. While the diagnostic messages are most useful for expert users, they can also help novice users by allowing them to provide detailed trouble reports to their network administrator.';
+var welcomeBlurb = 'The Network Diagnostic Tool (NDT) provides a sophisticated speed and diagnostic test. An NDT test reports more than just the upload and download speeds - it also attempts to determine what, if any, problems limited these speeds, differentiating between computer configuration and network infrastructure problems. While the diagnostic messages are most useful for expert users, they can also help novice users by allowing them to provide detailed trouble reports to their network administrator.';
 
 /**
 * @cfg {string} resultsTitleText

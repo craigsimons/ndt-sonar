@@ -1,19 +1,16 @@
 /**
-* 
-* @package Sonar.client
-* @author Craig Simons <craigsimons@sfu.ca>
-* @module-attributes
-* @license MIT
-* 
-* This is the worker script required to run the NDT test.
-*/
-
+ * 
+ * @package Sonar.client
+ * @author Craig Simons <craigsimons@sfu.ca>
+ * @module-attributes
+ * @license MIT
+ * 
+ * This is the worker script required to run the NDT test.
+ */
 importScripts('NDTWrapper.js');
 importScripts('NDTjs.js');
 
-"use strict";
-
-self.addEventListener('message', function (e) {
+self.addEventListener('message', function(e) {
   var msg = e.data;
   switch (msg.cmd) {
     case 'start':
@@ -28,7 +25,15 @@ self.addEventListener('message', function (e) {
   };
 }, false);
 
-function startNDT(hostname, port, path, update_interval) {
+/**
+ * Resets the speed gauge with defaults and zeroes the value. Supplied element should be {@link #speedGauge}.
+ * @param {string} hostname 
+ * @param {integer} port 
+ * @param {string} path 
+ * @param {integer} updateInterval 
+ * @return {null}
+ */
+function startNDT(hostname, port, path, updateInterval) {
   var callbacks = {
     'onstart': function(server) {
       self.postMessage({
@@ -64,6 +69,6 @@ function startNDT(hostname, port, path, update_interval) {
     }
   };
 
-  var client = new NDTjs(hostname, port, path, callbacks, update_interval);
+  var client = new NDTjs(hostname, port, path, callbacks, updateInterval);
   client.startTest();
 }
