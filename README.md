@@ -1,8 +1,11 @@
 # Sonar
 
-Sonar is an HTML5-only network diagnostic tool that utilizes the [perfSonar](http://www.perfsonar.net/) platform as well as NDT javascript libraries developed by [M-Lab](http://www.measurementlab.net/). 
+Sonar is an HTML5-only network diagnostic tool that utilizes the [perfSonar](http://www.perfsonar.net/) platform as well as NDT javascript libraries developed by [M-Lab](http://www.measurementlab.net/). The test determines upload and download bandwidth and can also determine some network faults such as congestion.
 
-####Some of the strengths of Sonar:
+#### Demo
+An online demo of an unmodified Sonar instance can be found at [www.craigsimons.com/ndt-sonar/](www.craigsimons.com/ndt-sonar/).
+
+#### Some of the strengths of Sonar:
 - No Java required
 - Runs on modern mobile devices
 - Responsive design for all screen sizes
@@ -15,7 +18,7 @@ Sonar is an HTML5-only network diagnostic tool that utilizes the [perfSonar](htt
 - Web server required (no testing on local file system)
 - Questionable accuracy at high bitrates (100 MBit+)
 
-### Supported Browsers:
+#### Supported Browsers:
 - IE 10+
 - Firefox 38+
 - Chrome 31+
