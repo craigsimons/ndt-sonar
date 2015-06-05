@@ -3,7 +3,10 @@
 Sonar is an HTML5-only network diagnostic tool that utilizes the [perfSonar](http://www.perfsonar.net/) platform as well as NDT javascript libraries developed by [M-Lab](http://www.measurementlab.net/). The test determines upload and download bandwidth and can also determine some network faults such as congestion.
 
 #### Demo
-An online demo of an unmodified Sonar instance can be found at [www.craigsimons.com/ndt-sonar/](www.craigsimons.com/ndt-sonar/).
+An online demo of an unmodified Sonar instance can be found at [www.craigsimons.com/ndt-sonar/](http://craigsimons.com/ndt-sonar/).
+
+#### Documentation
+A link to the developer documentation can be found at [www.craigsimons.com/ndt-sonar/documentation/Sonar/](http://craigsimons.com/ndt-sonar/documentation/Sonar/). ** Work in progress! **
 
 #### Some of the strengths of Sonar:
 - No Java required
@@ -33,11 +36,12 @@ Simple copy the contents into a web readable directory and [customize](#customiz
 By default, Sonar is configured with a subset of [M-Lab](http://www.measurementlab.net/) nodes which are good for testing. However, it's expected that you will want to run your own install of the [perfSonar](http://www.perfsonar.net/) suite. If so, change the **serverList** attribute in the *sonar/app/config.js* file.
 
 For all other configuration items, see the code documentation (*documentaiton/Sonar/index.html*). 
-**Note: ** The documenation is readable on the local file sytem without having to upload it to a file server.
+
+** Note:** The documenation is readable on the local file sytem without having to upload it to a file server.
 
 ## Customization
 
-Several customization options are available that can be tailored to your environment. Titles, text and logos can be edited directly through the index.html file or the /sonar/app/config.js file.
+Several customization options are available that can be tailored to your environment. Titles, text and logos can be edited directly through the */index.html* file or the */sonar/app/config.js* file.
 
 A typical procedure for branding this app might be as follows:
 
