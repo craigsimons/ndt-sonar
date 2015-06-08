@@ -6,7 +6,7 @@ Sonar is an HTML5-only network diagnostic tool that utilizes the [perfSonar](htt
 An online demo of an unmodified Sonar instance can be found at [www.craigsimons.com/ndt-sonar/](http://craigsimons.com/ndt-sonar/).
 
 #### Documentation
-A link to the developer documentation can be found at [www.craigsimons.com/ndt-sonar/documentation/Sonar/](http://craigsimons.com/ndt-sonar/documentation/Sonar/). ** Work in progress! **
+A link to the developer documentation can be found at [www.craigsimons.com/ndt-sonar/documentation/Sonar/](http://craigsimons.com/ndt-sonar/documentation/Sonar/). **Work in progress!**
 
 #### Some of the strengths of Sonar:
 - No Java required
@@ -37,7 +37,7 @@ By default, Sonar is configured with a subset of [M-Lab](http://www.measurementl
 
 For all other configuration items, see the code documentation (*documentaiton/Sonar/index.html*). 
 
-** Note:** The documenation is readable on the local file sytem without having to upload it to a file server.
+**Note:** The documenation is readable on the local file sytem without having to upload it to a file server.
 
 ## Customization
 
@@ -54,6 +54,9 @@ A typical procedure for branding this app might be as follows:
 ## Documentation
 
 Full developer-level documentation can be found in the [documentation/Sonar](documentation/Sonar) directory. 
+
+## License
+This application is licenced under Apache 2.0
 
 ## Special Thanks
 Special thanks to the M-Lab team for developing a Websockets/Web Workers client. While this project exists to improve the presentability of the "Speed Test" experience, I doubt I would have been able to develop the NDTjs classes myself :)
