@@ -93,6 +93,18 @@ var enableTabAdvanced = true;
 var enableSummaryExtraData = true;
 
 /**
+* @cfg {boolean} reportResults
+* Enables the collection of test results for later analysis. The URL called is defined by {@link #reportURL}.
+*/
+var reportResults = true;
+
+/**
+* @cfg {string} reportResults
+* The URL to be called for reporting ability. {@link Sonar.app.application#setPhase} will create an Ajax call to this URL.
+*/
+var reportURL = "sonar/server/report.php";
+
+/**
 * @cfg {string} titleText
 * The main title displayed on masthead
 * ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#header-title*** DOM element on index.html. **

@@ -88,18 +88,20 @@
    </head>
    <body>
    <div class="highlight"><pre><span class="cm">/**</span>
-<span class="cm">* </span>
-<span class="cm">* @package Sonar.client</span>
-<span class="cm">* @author Craig Simons &lt;craigsimons@sfu.ca&gt;</span>
-<span class="cm">* @module-attributes</span>
-<span class="cm">* @license MIT</span>
-<span class="cm">* </span>
-<span class="cm">* This is the worker script required to run the NDT test.</span>
-<span class="cm">*/</span>
+<span class="cm"> * </span>
+<span class="cm"> * @package Sonar.client</span>
+<span class="cm"> * @author Craig Simons &lt;craigsimons@sfu.ca&gt;</span>
+<span class="cm"> * @module-attributes</span>
+<span class="cm"> * @author Peter Booth &lt;pboothe@google.com&gt;</span>
+<span class="cm"> * @author Aaron Brown &lt;aaronmatthewbrown@gmail.com&gt;</span>
+<span class="cm"> * @author Craig Simons &lt;craigsimons@sfu.ca&gt; </span>
+<span class="cm"> * </span>
+<span class="cm"> * This is the worker script required to run the NDT test.</span>
+<span class="cm"> */</span>
+<span class="nx">importScripts</span><span class="p">(</span><span class="s1">&#39;NDTWrapper.js&#39;</span><span class="p">);</span>
+<span class="nx">importScripts</span><span class="p">(</span><span class="s1">&#39;NDTjs.js&#39;</span><span class="p">);</span>
 
-<span class="c1">//importScripts(&#39;ndt-client.js&#39;);</span>
-
-<span class="nx">self</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+<span class="nx">self</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
   <span class="k">switch</span> <span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">cmd</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">case</span> <span class="s1">&#39;start&#39;</span><span class="o">:</span>
@@ -114,7 +116,15 @@
   <span class="p">};</span>
 <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
 
-<span class="kd">function</span> <span class="nx">startNDT</span><span class="p">(</span><span class="nx">hostname</span><span class="p">,</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">update_interval</span><span class="p">)</span> <span class="p">{</span>
+<span class="cm">/**</span>
+<span class="cm"> * Resets the speed gauge with defaults and zeroes the value. Supplied element should be {@link #speedGauge}.</span>
+<span class="cm"> * @param {string} hostname </span>
+<span class="cm"> * @param {integer} port </span>
+<span class="cm"> * @param {string} path </span>
+<span class="cm"> * @param {integer} updateInterval </span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">startNDT</span><span class="p">(</span><span class="nx">hostname</span><span class="p">,</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">updateInterval</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">callbacks</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;onstart&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">self</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">({</span>
@@ -150,7 +160,7 @@
     <span class="p">}</span>
   <span class="p">};</span>
 
-  <span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDTjs</span><span class="p">(</span><span class="nx">hostname</span><span class="p">,</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">callbacks</span><span class="p">,</span> <span class="nx">update_interval</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NDTjs</span><span class="p">(</span><span class="nx">hostname</span><span class="p">,</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">callbacks</span><span class="p">,</span> <span class="nx">updateInterval</span><span class="p">);</span>
   <span class="nx">client</span><span class="p">.</span><span class="nx">startTest</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>

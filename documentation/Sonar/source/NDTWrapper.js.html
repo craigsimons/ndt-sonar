@@ -88,84 +88,85 @@
    </head>
    <body>
    <div class="highlight"><pre><span class="err">/**</span>
-<span class="o">*</span> 
-<span class="o">*</span> <span class="err">@</span><span class="kr">package</span> <span class="nx">Sonar</span><span class="p">.</span><span class="nx">client</span>
-<span class="o">*</span> <span class="err">@</span><span class="nx">author</span> <span class="nx">Craig</span> <span class="nx">Simons</span> <span class="o">&lt;</span><span class="nx">craigsimons</span><span class="err">@</span><span class="nx">sfu</span><span class="p">.</span><span class="nx">ca</span><span class="o">&gt;</span>
-<span class="o">*</span> <span class="err">@</span><span class="nx">module</span><span class="o">-</span><span class="nx">attributes</span>
-<span class="o">*</span> <span class="err">@</span><span class="nx">license</span> <span class="nx">MIT</span>
-<span class="o">*</span> 
-<span class="o">*</span> <span class="nx">This</span> <span class="nx">is</span> <span class="nx">an</span> <span class="nx">NDT</span> <span class="nx">client</span><span class="p">,</span> <span class="nx">written</span> <span class="k">in</span> <span class="nx">javascript</span><span class="p">.</span>  <span class="nx">It</span> <span class="nx">speaks</span> <span class="nx">the</span> <span class="nx">websocket</span> <span class="nx">version</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">NDT</span> <span class="nx">protocol</span><span class="p">.</span>  <span class="nx">The</span> <span class="nx">NDT</span> <span class="nx">protocol</span> <span class="nx">is</span> <span class="nx">documented</span> <span class="nx">at</span> <span class="cp">[</span><span class="nx">https</span><span class="p">:</span><span class="c1">//code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)</span>
-<span class="o">*/</span>
+ <span class="o">*</span> 
+ <span class="o">*</span> <span class="err">@</span><span class="kr">package</span> <span class="nx">Sonar</span><span class="p">.</span><span class="nx">client</span>
+ <span class="o">*</span> <span class="err">@</span><span class="nx">author</span> <span class="nx">Peter</span> <span class="nx">Booth</span> <span class="o">&lt;</span><span class="nx">pboothe</span><span class="err">@</span><span class="nx">google</span><span class="p">.</span><span class="nx">com</span><span class="o">&gt;</span>
+ <span class="o">*</span> <span class="err">@</span><span class="nx">author</span> <span class="nx">Aaron</span> <span class="nx">Brown</span> <span class="o">&lt;</span><span class="nx">aaronmatthewbrown</span><span class="err">@</span><span class="nx">gmail</span><span class="p">.</span><span class="nx">com</span><span class="o">&gt;</span>
+ <span class="o">*</span> <span class="err">@</span><span class="nx">author</span> <span class="nx">Craig</span> <span class="nx">Simons</span> <span class="o">&lt;</span><span class="nx">craigsimons</span><span class="err">@</span><span class="nx">sfu</span><span class="p">.</span><span class="nx">ca</span><span class="o">&gt;</span> 
+ <span class="o">*</span> 
+ <span class="o">*</span> <span class="nx">This</span> <span class="nx">is</span> <span class="nx">an</span> <span class="nx">NDT</span> <span class="nx">client</span><span class="p">,</span> <span class="nx">written</span> <span class="k">in</span> <span class="nx">javascript</span><span class="p">.</span>  <span class="nx">It</span> <span class="nx">speaks</span> <span class="nx">the</span> <span class="nx">websocket</span> <span class="nx">version</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nx">NDT</span> <span class="nx">protocol</span><span class="p">.</span>  <span class="nx">The</span> <span class="nx">NDT</span> <span class="nx">protocol</span> <span class="nx">is</span> <span class="nx">documented</span> <span class="nx">at</span> <span class="cp">[</span><span class="nx">https</span><span class="p">:</span><span class="c1">//code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)</span>
+ <span class="o">*/</span>
 
 <span class="cm">/**</span>
-<span class="cm">* </span>
-<span class="cm">* @class Sonar.client.NDTWrapper</span>
-<span class="cm">* </span>
-<span class="cm">* This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at [https://code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)</span>
-<span class="cm">*/</span>
+<span class="cm"> * </span>
+<span class="cm"> * This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at [https://code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol).</span>
+<span class="cm"> * @class Sonar.client.NDTWrapper</span>
+<span class="cm"> * @package Sonar.client</span>
+<span class="cm"> * @param {string} server </span>
+<span class="cm"> * @param {integer} updateInterval </span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
 <span class="nx">function</span> <span class="nx">NDTWrapper</span><span class="p">(</span><span class="nx">server</span><span class="p">,</span> <span class="nx">updateInterval</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="n">_this</span><span class="o"> =</span> <span class="nx">this</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="n">_this</span><span class="o"> =</span> <span class="nx">this</span><span class="p">;</span>
 
-    <span class="c1">// XXX: include a way to override this</span>
+  <span class="c1">// XXX: include a way to override this</span>
+  <span class="n">this.use_web_worker</span><span class="o"> =</span> <span class="kc">false</span><span class="p">;</span>
+
+  <span class="cm">/* If they have Web Workers, use it to do the NDT test, unless it&#39;s Firefox</span>
+<span class="cm">   * which doesn&#39;t support web workers using websockets. This should be</span>
+<span class="cm">   * migrated into something more sane (e.g. a function that spawns an inline worker that</span>
+<span class="cm">   * creates a websocket, and returns true/false if that succeeds */</span>
+  <span class="kd">var</span> <span class="n">isFirefox</span><span class="o"> =</span> <span class="nx">typeof</span> <span class="nx">InstallTrigger</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="n">supportsWebWorkers</span><span class="o"> =</span> <span class="o">!!</span><span class="nx">window.Worker</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">supportsWebWorkers</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">this.use_web_worker</span><span class="o"> =</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">isFirefox</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">this.use_web_worker</span><span class="o"> =</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
 
-    <span class="cm">/* If they have Web Workers, use it to do the NDT test, unless it&#39;s Firefox</span>
-<span class="cm">     * which doesn&#39;t support web workers using websockets. This should be</span>
-<span class="cm">     * migrated into something more sane (e.g. a function that spawns an inline worker that</span>
-<span class="cm">     * creates a websocket, and returns true/false if that succeeds */</span>
-    <span class="kd">var</span> <span class="n">isFirefox</span><span class="o"> =</span> <span class="nx">typeof</span> <span class="nx">InstallTrigger</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">;</span>     
-    <span class="kd">var</span> <span class="n">supportsWebWorkers</span><span class="o"> =</span> <span class="o">!!</span><span class="nx">window.Worker</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">this._hostname</span><span class="o"> =</span> <span class="nx">server</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">this._hostname</span><span class="o"> =</span> <span class="nx">location.hostname</span><span class="p">;</span>
+  <span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">supportsWebWorkers</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">this.use_web_worker</span><span class="o"> =</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">}</span>
+  <span class="n">this._port</span><span class="o"> =</span> <span class="mi">3001</span><span class="p">;</span>
+  <span class="n">this._path</span><span class="o"> =</span> <span class="s2">&quot;/ndt_protocol&quot;</span><span class="p">;</span>
+  <span class="n">this._update_interval</span><span class="o"> =</span> <span class="nx">updateInterval</span><span class="p">;</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">isFirefox</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">this.use_web_worker</span><span class="o"> =</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">this._hostname</span><span class="o"> =</span> <span class="nx">server</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-        <span class="n">this._hostname</span><span class="o"> =</span> <span class="nx">location.hostname</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="n">this._port</span><span class="o"> =</span> <span class="mi">3001</span><span class="p">;</span>
-    <span class="n">this._path</span><span class="o"> =</span> <span class="s2">&quot;/ndt_protocol&quot;</span><span class="p">;</span>
-    <span class="n">this._update_interval</span><span class="o"> =</span> <span class="nx">updateInterval</span><span class="p">;</span>
-
-    <span class="nx">this.reset</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="n">NDTWrapper.prototype.reset</span><span class="o"> =</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">this.worker</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">this.worker.postMessage</span><span class="p">({</span>
+  <span class="n">this.reset</span><span class="o"> =</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">this.worker</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">this.worker.postMessage</span><span class="p">({</span>
         <span class="s1">&#39;cmd&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span>
-    <span class="p">});</span>
+      <span class="p">});</span>
 
-    <span class="n">this.worker</span><span class="o"> =</span> <span class="kt">null</span><span class="p">;</span>
-  <span class="p">}</span>
+      <span class="n">this.worker</span><span class="o"> =</span> <span class="kt">null</span><span class="p">;</span>
+    <span class="p">}</span>
 
-  <span class="k">if</span> <span class="p">(</span><span class="nx">this.client</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">this.client</span><span class="o"> =</span> <span class="kt">null</span><span class="p">;</span>
-  <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">this.client</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">this.client</span><span class="o"> =</span> <span class="kt">null</span><span class="p">;</span>
+    <span class="p">}</span>
 
-  <span class="n">this._ndt_vars</span><span class="o"> =</span> <span class="p">{</span> <span class="s1">&#39;ClientToServerSpeed&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">};</span>
-  <span class="n">this._errmsg</span><span class="o"> =</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
-  <span class="n">this._status</span><span class="o"> =</span> <span class="s2">&quot;notStarted&quot;</span><span class="p">;</span>
-  <span class="n">this._diagnosis</span><span class="o"> =</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
-<span class="p">};</span>
+    <span class="n">this._ndt_vars</span><span class="o"> =</span> <span class="p">{</span>
+      <span class="s1">&#39;ClientToServerSpeed&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">};</span>
+    <span class="n">this._errmsg</span><span class="o"> =</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="n">this._status</span><span class="o"> =</span> <span class="s2">&quot;notStarted&quot;</span><span class="p">;</span>
+    <span class="n">this._diagnosis</span><span class="o"> =</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+  <span class="p">};</span>
 
-<span class="n">NDTWrapper.prototype.run_test</span><span class="o"> =</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="n">this.run_test</span><span class="o"> =</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="n">_this</span><span class="o"> =</span> <span class="nx">this</span><span class="p">;</span>
 
     <span class="nx">this.reset</span><span class="p">();</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="nx">this.use_web_worker</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">console.log</span><span class="p">(</span><span class="s2">&quot;Generating new worker&quot;</span><span class="p">);</span>
-      <span class="n">this.worker</span><span class="o"> =</span> <span class="nx">new</span> <span class="nx">Worker</span><span class="p">(</span><span class="s1">&#39;js/ndt-wrapper-ww.js&#39;</span><span class="p">);</span>
-      <span class="nx">this.worker.addEventListener</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="nx">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">this.worker</span><span class="o"> =</span> <span class="nx">new</span> <span class="nx">Worker</span><span class="p">(</span><span class="s1">&#39;sonar/client/ndt-wrapper-ww.js&#39;</span><span class="p">);</span>
+      <span class="nx">this.worker.addEventListener</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="nx">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="n">msg</span><span class="o"> =</span> <span class="nx">e.data</span><span class="p">;</span>
         <span class="nx">switch</span> <span class="p">(</span><span class="nx">msg.cmd</span><span class="p">)</span> <span class="p">{</span>
           <span class="k">case</span> <span class="s1">&#39;onstart&#39;</span><span class="p">:</span>
@@ -186,7 +187,7 @@
         <span class="p">}</span>
       <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
 
-      <span class="nx">this.worker.addEventListener</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nx">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">this.worker.addEventListener</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nx">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">_this.onerror_cb</span><span class="p">(</span><span class="nx">e.lineno</span><span class="p">,</span> <span class="s1">&#39; in &#39;</span><span class="p">,</span> <span class="nx">e.filename</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="nx">e.message</span><span class="p">);</span>
       <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
 
@@ -197,99 +198,96 @@
         <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="nx">this._path</span><span class="p">,</span>
         <span class="s1">&#39;update_interval&#39;</span><span class="p">:</span> <span class="nx">this._update_interval</span>
       <span class="p">});</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
       <span class="n">this.callbacks</span><span class="o"> =</span> <span class="p">{</span>
         <span class="s1">&#39;onstart&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">_this.onstart_cb</span><span class="p">(</span><span class="nx">server</span><span class="p">);</span>
+          <span class="nx">_this.onstart_cb</span><span class="p">(</span><span class="nx">server</span><span class="p">);</span>
         <span class="p">},</span>
         <span class="s1">&#39;onstatechange&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">_this.onstatechange_cb</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
+          <span class="nx">_this.onstatechange_cb</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
         <span class="p">},</span>
         <span class="s1">&#39;onprogress&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">_this.onprogress_cb</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
+          <span class="nx">_this.onprogress_cb</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
         <span class="p">},</span>
         <span class="s1">&#39;onfinish&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">(</span><span class="nx">passed_results</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">_this.onfinish_cb</span><span class="p">(</span><span class="nx">passed_results</span><span class="p">);</span>
+          <span class="nx">_this.onfinish_cb</span><span class="p">(</span><span class="nx">passed_results</span><span class="p">);</span>
         <span class="p">},</span>
         <span class="s1">&#39;onerror&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">(</span><span class="nx">error_message</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">_this.onerror_cb</span><span class="p">(</span><span class="nx">error_message</span><span class="p">);</span>
+          <span class="nx">_this.onerror_cb</span><span class="p">(</span><span class="nx">error_message</span><span class="p">);</span>
         <span class="p">}</span>
       <span class="p">};</span>
 
       <span class="n">this.client</span><span class="o"> =</span> <span class="nx">new</span> <span class="nx">NDTjs</span><span class="p">(</span><span class="nx">this._hostname</span><span class="p">,</span> <span class="nx">this._port</span><span class="p">,</span> <span class="nx">this._path</span><span class="p">,</span> <span class="nx">this.callbacks</span><span class="p">,</span> <span class="nx">this._update_interval</span><span class="p">);</span>
       <span class="nx">this.client.startTest</span><span class="p">();</span>
     <span class="p">}</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="n">NDTWrapper.prototype.get_status</span><span class="o"> =</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="n">this.get_status</span><span class="o"> =</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">this._status</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="n">NDTWrapper.prototype.get_diagnosis</span><span class="o"> =</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="n">this.get_diagnosis</span><span class="o"> =</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">this._diagnosis</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="n">NDTWrapper.prototype.get_errmsg</span><span class="o"> =</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="n">this.get_errmsg</span><span class="o"> =</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">this._errmsg</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="n">NDTWrapper.prototype.get_host</span><span class="o"> =</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="n">this.get_host</span><span class="o"> =</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">this._hostname</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="n">NDTWrapper.prototype.getNDTvar</span><span class="o"> =</span> <span class="nx">function</span> <span class="p">(</span><span class="kd">variable</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">this.getNDTvar</span><span class="o"> =</span> <span class="nx">function</span><span class="p">(</span><span class="kd">variable</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">this._ndt_vars</span><span class="err">[</span><span class="kd">variable</span><span class="cp">]</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="nx">NDTWrapper</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_PcBuffSpdLimit</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">variable</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">get_PcBuffSpdLimit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">variable</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nb">Number</span><span class="p">.</span><span class="kc">NaN</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="nx">NDTWrapper</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onstart_cb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{</span>
-<span class="p">};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">onstart_cb</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">server</span><span class="p">)</span> <span class="p">{};</span>
 
-<span class="nx">NDTWrapper</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onstatechange_cb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">onstatechange_cb</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;running_s2c&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_status</span> <span class="o">=</span> <span class="s1">&#39;Inbound&#39;</span><span class="p">;</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;s2cRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_status</span> <span class="o">=</span> <span class="s1">&#39;Inbound&#39;</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;s2cRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;finished_s2c&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;s2cRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;running_c2s&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_status</span> <span class="o">=</span> <span class="s1">&#39;Outbound&#39;</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">==</span> <span class="s1">&#39;finished_c2s&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ClientToServerSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;c2sRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;finished_s2c&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;s2cRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;running_c2s&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_status</span> <span class="o">=</span> <span class="s1">&#39;Outbound&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">==</span> <span class="s1">&#39;finished_c2s&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ClientToServerSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;c2sRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="nx">NDTWrapper</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onprogress_cb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">onprogress_cb</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">==</span> <span class="s1">&#39;interval_s2c&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;s2cRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;s2cRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;interval_c2s&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ClientToServerSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;c2sRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;interval_c2s&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ClientToServerSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;c2sRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="nx">NDTWrapper</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onfinish_cb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">onfinish_cb</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_errmsg</span> <span class="o">=</span> <span class="s2">&quot;Test completed&quot;</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span> <span class="o">=</span> <span class="nx">results</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ServerToClientSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;s2cRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;ClientToServerSpeed&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;c2sRate&#39;</span><span class="cp">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="cp">[</span><span class="s1">&#39;Jitter&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;MaxRTT&#39;</span><span class="cp">]</span> <span class="o">-</span> <span class="nx">results</span><span class="cp">[</span><span class="s1">&#39;MinRTT&#39;</span><span class="cp">]</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">build_diagnosis</span><span class="p">();</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="nx">NDTWrapper</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">build_diagnosis</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">build_diagnosis</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_diagnosis</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_ndt_vars</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="s2">&quot;  &quot;</span><span class="p">);</span>
-<span class="p">};</span>
+  <span class="p">};</span>
 
-<span class="nx">NDTWrapper</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onerror_cb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">error_message</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">_errmsg</span> <span class="o">=</span> <span class="s2">&quot;Test failed: &quot;</span><span class="o">+</span><span class="nx">error_message</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">onerror_cb</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error_message</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_errmsg</span> <span class="o">=</span> <span class="s2">&quot;Test failed: &quot;</span> <span class="o">+</span> <span class="nx">error_message</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+<span class="p">}</span>
 </pre></div>
 
    </body>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sonar: NDTWrapper</title>
+    <title>Sonar: report</title>
 
     <!-- Bootstrap -->
    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -140,24 +140,62 @@ $('#search').typeahead({
                           
                          <!-- main col left --> 
                          <div class="col-sm-12">
-                          <div class="page-title"><h1 class="pull-left"><i class="fa fa-file-code-o hidden-xs"></i> NDTWrapper.js<img src="assets/images/languages/javascript.svg" alt = "javascript" class="title_language_image hidden-xs" \></h1><div class="header_source_button pull-right clearfix"><a href="source\NDTWrapper.js.html" class="btn btn-primary btn-sm">View Source</a></div></div><div class="clearfix"></div><nav class="navbar navbar-default sourcenav">  <div class="container-fluid">    <div class="navbar-header">      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">        <span class="sr-only">Toggle navigation</span>        <span class="icon-bar"></span>        <span class="icon-bar"></span>        <span class="icon-bar"></span>      </button>    </div>    <div id="navbar" class="navbar-collapse collapse">      <ul class="nav navbar-nav"><li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-exchange"></i> Methods <sup>1</sup> <span class="caret"></span></a><ul class="dropdown-menu  " role="menu"><li><a href="#heading_YW1GMllYTmpjbWx3ZEZOdmJtRnlMbU5zYVdWdWRFNUVWRmR5WVhCd1pYSXVhbk1ORFRXcmFwcGVy">NDTWrapper</a></li></ul></li>      </ul>    </div>  </div></nav><p>This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at <a href="https://code.google.com/p/ndt/wiki/NDTProtocol">https://code.google.com/p/ndt/wiki/NDTProtocol</a></p>
-<h3>Methods</h3><div class="panel-group" id="method_NDTWrapper" role="tablist" aria-multiselectable="true"><div class="panel panel-default method">
-<div class="panel-heading" role="tab" id="heading_YW1GMllYTmpjbWx3ZEZOdmJtRnlMbU5zYVdWdWRFNUVWRmR5WVhCd1pYSXVhbk1ORFRXcmFwcGVy">
+                          <div class="page-title"><h1 class="pull-left"><i class="fa fa-file-code-o hidden-xs"></i> report.php<img src="assets/images/languages/php.svg" alt = "php" class="title_language_image hidden-xs" \></h1><div class="header_source_button pull-right clearfix"><a href="source\report.php.html" class="btn btn-primary btn-sm">View Source</a></div></div><div class="clearfix"></div><nav class="navbar navbar-default sourcenav">  <div class="container-fluid">    <div class="navbar-header">      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">        <span class="sr-only">Toggle navigation</span>        <span class="icon-bar"></span>        <span class="icon-bar"></span>        <span class="icon-bar"></span>      </button>    </div>    <div id="navbar" class="navbar-collapse collapse">      <ul class="nav navbar-nav"><li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-exchange"></i> Methods <sup>3</sup> <span class="caret"></span></a><ul class="dropdown-menu  " role="menu"><li><a href="#heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdlblVVSUQ">genUUID</a></li><li><a href="#heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdldFJlYWxJcEFkZHI">getRealIpAddr</a></li><li><a href="#heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQXdyaXRlVG9TeXNsb2c">writeToSyslog</a></li></ul></li><li><a href="#todo"><i class="fa fa-wrench"></i> To Do <sup>1</sup></a></li>      </ul>    </div>  </div></nav><p>Simple reporting script to log NDT Sonar results.
+This script is intended to be called via Ajax after an NDT test is finished. It's not meant to be a fully featured reporting script (ie log to a database), just a quick and dirty tool that will allow later log analysis.
+<strong>Note: As syslog is limited to 1KB, it isn't possible to stick the full </strong>get<strong> result into the message. Therefore, only a subset of info is logged. Perhaps in the future, this script may log to a database directly. </strong>
+Expects a form post with the following values:</p>
+<ul>
+<li>"serverAddress": string,</li>
+<li>"download": float,</li>
+<li>"upload": float,</li>
+<li>"latency": float,</li>
+<li>"jitter": float</li>
+</ul>
+<h3>Methods</h3><div class="panel-group" id="method_report" role="tablist" aria-multiselectable="true"><div class="panel panel-default method">
+<div class="panel-heading" role="tab" id="heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdlblVVSUQ">
 <h4 class="panel-title">
-<a class="collapsed" data-toggle="collapse" href="#panel_YW1GMllYTmpjbWx3ZEZOdmJtRnlMbU5zYVdWdWRFNUVWRmR5WVhCd1pYSXVhbk1ORFRXcmFwcGVy" aria-expanded="false" aria-controls="panel_YW1GMllYTmpjbWx3ZEZOdmJtRnlMbU5zYVdWdWRFNUVWRmR5WVhCd1pYSXVhbk1ORFRXcmFwcGVy">
-<span class="member">NDTWrapper</span> (server, updateInterval) : <span class="dataType" data-type="null">null</span></a></h4><div class="panel-second-heading">This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is docu...</div></div>
-<div id="panel_YW1GMllYTmpjbWx3ZEZOdmJtRnlMbU5zYVdWdWRFNUVWRmR5WVhCd1pYSXVhbk1ORFRXcmFwcGVy" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" aria-labelledby="heading_YW1GMllYTmpjbWx3ZEZOdmJtRnlMbU5zYVdWdWRFNUVWRmR5WVhCd1pYSXVhbk1ORFRXcmFwcGVy">
+<a class="collapsed" data-toggle="collapse" href="#panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdlblVVSUQ" aria-expanded="false" aria-controls="panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdlblVVSUQ">
+<span class="member">genUUID</span> () : <span class="dataType" data-type="string">string</span><span class="label label-danger"></span> </a></h4><div class="panel-second-heading">Generates a valid RFC 4211 compliant v3 UUID. See example for more detail....</div></div>
+<div id="panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdlblVVSUQ" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" aria-labelledby="heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdlblVVSUQ">
 <div class="panel-body">
-<p>This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at <a href="https://code.google.com/p/ndt/wiki/NDTProtocol">https://code.google.com/p/ndt/wiki/NDTProtocol</a>.</p>
-<h5>Parameters</h5><ul><li><div><span class="param">server</span> : <span class="dataType" data-type="string">string</span></div></li>
-<li><div><span class="param">updateInterval</span> : <span class="dataType" data-type="integer">integer</span></div></li>
+<p>Generates a valid RFC 4211 compliant v3 UUID. See <a href="http://php.net/manual/en/function.uniqid.php#94959">example</a> for more detail.</p>
+<h5>Return</h5><ul><li><span class="dataType" data-type="string">string</span></li></ul>
+</div>
+</div>
+</div>
+<div class="panel panel-default method">
+<div class="panel-heading" role="tab" id="heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdldFJlYWxJcEFkZHI">
+<h4 class="panel-title">
+<a class="collapsed" data-toggle="collapse" href="#panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdldFJlYWxJcEFkZHI" aria-expanded="false" aria-controls="panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdldFJlYWxJcEFkZHI">
+<span class="member">getRealIpAddr</span> () : <span class="dataType" data-type="string">string</span><span class="label label-danger"></span> </a></h4><div class="panel-second-heading">Get the IP Address of the current user. This function takes into account proxied HTTP requests (at least those with an http:/...</div></div>
+<div id="panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdldFJlYWxJcEFkZHI" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" aria-labelledby="heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQWdldFJlYWxJcEFkZHI">
+<div class="panel-body">
+<p>Get the IP Address of the current user. This function takes into account proxied HTTP requests (at least those with an <a href="X-Forwarded-For">http://en.wikipedia.org/wiki/X-Forwarded-For</a>) header field.</p>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i>  It is entirely possible for an end user to spoof an IP through proxying methods. Do not rely on the results of this function to provide any measure of security. </div><h5>Return</h5><ul><li><span class="dataType" data-type="string">string</span></li></ul>
+<div class="alert alert-warning" role="alert"><i class="fa fa-wrench"></i> <strong>To Do:</strong> Investigate performance of this function under non-Apache implementations such as nginx.</div></div>
+</div>
+</div>
+<div class="panel panel-default method">
+<div class="panel-heading" role="tab" id="heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQXdyaXRlVG9TeXNsb2c">
+<h4 class="panel-title">
+<a class="collapsed" data-toggle="collapse" href="#panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQXdyaXRlVG9TeXNsb2c" aria-expanded="false" aria-controls="panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQXdyaXRlVG9TeXNsb2c">
+<span class="member">writeToSyslog</span> ($syslogID, $syslogFacility, $message) : <span class="dataType" data-type="null">null</span><span class="label label-danger"></span> </a></h4><div class="panel-second-heading">Writes to the system logger.  Note: This should be OS-agnostic, although Windows servers can't handle syslogFacility values o...</div></div>
+<div id="panel_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQXdyaXRlVG9TeXNsb2c" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" aria-labelledby="heading_Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQXdyaXRlVG9TeXNsb2c">
+<div class="panel-body">
+<p>Writes to the system logger. <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i>  This should be OS-agnostic, although Windows servers can't handle <a href="Y0dod1UyOXVZWEl1YzJWeWRtVnljbVZ3YjNKMExuQm9jQXdyaXRlVG9TeXNsb2c.html">syslogFacility</a> values of LOG_LOCAL0 .. LOG_LOCAL7.</div></p>
+<h5>Parameters</h5><ul><li><div><span class="param">$syslogID</span> : <span class="dataType" data-type="string">string</span></div><p><p>The syslog identifier used.</p>
+</p></li>
+<li><div><span class="param">$syslogFacility</span> : <span class="dataType" data-type="integer">integer</span></div><p><p>The syslog facility as defined by {@link @syslogFacility}.</p>
+</p></li>
+<li><div><span class="param">$message</span> : <span class="dataType" data-type="string">string</span></div><p><p>The actual message to be logged.</p>
+</p></li>
 </ul>
 <h5>Return</h5><ul><li><span class="dataType" data-type="null">null</span></li></ul>
 </div>
 </div>
 </div>
 </div>
-
+<h3 id="todo">To Do</h3><table class="table"><thead><tr><th>#</th><th>Parent</th><th>Line</th><th>Comment</th></tr></thead><tbody><tr><td class="col-md-1">1</td><td class="col-md-1">getRealIpAddr</td><td class="col-md-1">131</td><td class="col-md-9">Investigate performance of this function under non-Apache implementations such as nginx.</td></tr></tbody></table>
                           </div>
                        </div><!--/row-->
                     </div><!-- /col-9 -->

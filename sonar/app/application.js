@@ -186,6 +186,28 @@ function init() {
 }
 
 /**
+ * Via Jquery Ajax call, report the test results for later analysis. See {@link Sonar.server.report} for for details.
+ * @return {null}
+ */
+function reportResults() {
+
+	var data = {
+		"serverAddress": currentServer,
+		"download": getPeakSpeed(downloadData),
+		"upload": getPeakSpeed(uploadData),
+		"latency": Math.round(getNDTAverageRoundTrip()),
+		"jitter": getNDTJitter()
+	};
+
+	$.ajax({
+		type: 'POST',
+		url: reportURL,
+		data: data,
+		dataType: "JSON"
+	});
+}
+
+/**
  * Determines if the current user is using Internet Explorer for a browser, and if so, whether the version is less than version 10.
  * Anything less than version 10 won't event initialize the test far enough to instantiate the {@link Sonar.client.NDTjs} object, which has it's own {@link Sonar.client.NDTjs#checkBrowserSupport} function to alert users about unsupported browsers.
  * @return {boolean}
@@ -762,6 +784,12 @@ function setPhase(phase) {
 			updateChartData(resultsChart, uploadData, downloadData);
 
 			showPage('results');
+
+			//: call the reports URL if required.
+			if (reportResults) {
+				reportResults();
+			}
+
 			break;
 
 		default:

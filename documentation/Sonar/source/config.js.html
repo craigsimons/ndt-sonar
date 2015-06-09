@@ -92,11 +92,58 @@
 <span class="cm">* @package Sonar.app</span>
 <span class="cm">* @author Craig Simons &lt;craigsimons@sfu.ca&gt;</span>
 <span class="cm">* @module-attributes</span>
-<span class="cm">* @license Apache 2.0</span>
 <span class="cm">* </span>
 <span class="cm">* Application configuration for Sonar functions contained in {@link Sonar.app.application}. These configuration items are mostly intended to allow unique branding options for each deployment of Sonar.</span>
 <span class="cm">* </span>
 <span class="cm">*/</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {array(Object)} allowDebug</span>
+<span class="cm">* The list of servers we will allow the client to connect to. The structure of the object array needs to be in the following format:</span>
+<span class="cm">* ```</span>
+<span class="cm">* </span><span class="cp">[</span><span class="p">{</span>
+<span class="o">*</span> 	<span class="nx">name</span><span class="p">:</span> <span class="kt">string</span> <span class="p">(</span><span class="nx">human</span> <span class="nx">name</span> <span class="nx">displayed</span><span class="p">),</span>
+<span class="o">*</span> 	<span class="nx">address</span><span class="p">:</span> <span class="kt">string</span> <span class="p">(</span><span class="nx">ip</span> <span class="ow">or</span> <span class="nx">DNS</span> <span class="nx">address</span><span class="p">)</span>
+<span class="o">*</span> <span class="p">}</span><span class="cp">]</span><span class="cm"></span>
+<span class="cm">* ```</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">serverList</span> <span class="o">=</span> <span class="cp">[</span><span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Calgary (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.yyc01.measurement-lab.org&#39;</span>
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;London (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.lhr01.measurement-lab.org&#39;</span>
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Japan (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.hnd01.measurement-lab.org&#39;</span>			
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;New York (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.lga04.measurement-lab.org&#39;</span>
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Paris (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.par01.measurement-lab.org&#39;</span>		
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;San Fransciso (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.nuq03.measurement-lab.org&#39;</span>		
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Seattle (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.sea01.measurement-lab.org&#39;</span>
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Stockholm (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.arn01.measurement-lab.org&#39;</span>
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Sydney (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.syd01.measurement-lab.org&#39;</span>		
+<span class="p">},</span> <span class="p">{</span>
+	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Toronto (M-Lab)&#39;</span><span class="p">,</span>
+	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;ndt.iupui.mlab1.yyz01.measurement-lab.org&#39;</span>	
+<span class="p">}</span><span class="cp">]</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {boolean} allowDebug</span>
+<span class="cm">* True to overwrite the default HTML coded values **</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">useDynamicText</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
 
 <span class="cm">/**</span>
 <span class="cm">* @cfg {boolean} simulate</span>
@@ -111,25 +158,40 @@
 <span class="kd">var</span> <span class="nx">allowDebug</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 
 <span class="cm">/**</span>
-<span class="cm">* @cfg {array(Object)} allowDebug</span>
-<span class="cm">* The list of servers we will allow the client to connect to. The structure of the object array needs to be in the following format:</span>
-<span class="cm">* ```</span>
-<span class="cm">* </span><span class="cp">[</span><span class="p">{</span>
-<span class="o">*</span> 	<span class="nx">name</span><span class="p">:</span> <span class="kt">string</span> <span class="p">(</span><span class="nx">human</span> <span class="nx">name</span> <span class="nx">displayed</span><span class="p">),</span>
-<span class="o">*</span> 	<span class="nx">address</span><span class="p">:</span> <span class="kt">string</span> <span class="p">(</span><span class="nx">ip</span> <span class="ow">or</span> <span class="nx">DNS</span> <span class="nx">address</span><span class="p">)</span>
-<span class="o">*</span> <span class="p">}</span><span class="cp">]</span><span class="cm"></span>
-<span class="cm">* ```</span>
+<span class="cm">* @cfg {boolean} enableChart</span>
+<span class="cm">* Enables the chart tab on the results page.</span>
 <span class="cm">*/</span>
-<span class="kd">var</span> <span class="nx">serverList</span> <span class="o">=</span> <span class="cp">[</span><span class="p">{</span>
-	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Burnaby&#39;</span><span class="p">,</span>
-	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;bby-sonar.sfu.ca&#39;</span>
-<span class="p">},</span> <span class="p">{</span>
-	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Surrey&#39;</span><span class="p">,</span>
-	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;sry-sonar.sfu.ca&#39;</span>
-<span class="p">},</span> <span class="p">{</span>
-	<span class="nx">name</span><span class="p">:</span> <span class="s1">&#39;Vancouver&#39;</span><span class="p">,</span>
-	<span class="nx">address</span><span class="p">:</span> <span class="s1">&#39;van-sonar.sfu.ca&#39;</span>			
-<span class="p">}</span><span class="cp">]</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">enableTabChart</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {boolean} enableDetails</span>
+<span class="cm">* Enables the details tab on the results page.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">enableTabDetails</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {boolean} enableAdvanced</span>
+<span class="cm">* Enables the advanced tab on the results page.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">enableTabAdvanced</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {boolean} enableAdvanced</span>
+<span class="cm">* Enables the additional data shown on the summary page (Network latency and Jitter).</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">enableSummaryExtraData</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {boolean} reportResults</span>
+<span class="cm">* Enables the collection of test results for later analysis. The URL called is defined by {@link #reportURL}.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">reportResults</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm">* @cfg {string} reportResults</span>
+<span class="cm">* The URL to be called for reporting ability. {@link Sonar.app.application#setPhase} will create an Ajax call to this URL.</span>
+<span class="cm">*/</span>
+<span class="kd">var</span> <span class="nx">reportURL</span> <span class="o">=</span> <span class="s2">&quot;sonar/server/report.php&quot;</span><span class="p">;</span>
 
 <span class="cm">/**</span>
 <span class="cm">* @cfg {string} titleText</span>
@@ -175,7 +237,7 @@
 <span class="cm">* The main description on the welcome page.</span>
 <span class="cm">* ** Note: It is unlikely changes to this variable will be picked up by search crawlers. To ensure SEO compatability, you are required to also changes the ***#welcome-blurb DOM*** element on index.html. **</span>
 <span class="cm">*/</span>
-<span class="kd">var</span> <span class="nx">welcomeBlurb</span> <span class="o">=</span> <span class="s1">&#39;The Network Diagnostic Tool (NDT) provides a sophisticated speed and diagnostic test. An NDT test reports more than just the upload and download speeds — it also attempts to determine what, if any, problems limited these speeds, differentiating between computer configuration and network infrastructure problems. While the diagnostic messages are most useful for expert users, they can also help novice users by allowing them to provide detailed trouble reports to their network administrator.&#39;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">welcomeBlurb</span> <span class="o">=</span> <span class="s1">&#39;The Network Diagnostic Tool (NDT) provides a sophisticated speed and diagnostic test. An NDT test reports more than just the upload and download speeds - it also attempts to determine what, if any, problems limited these speeds, differentiating between computer configuration and network infrastructure problems. While the diagnostic messages are most useful for expert users, they can also help novice users by allowing them to provide detailed trouble reports to their network administrator.&#39;</span><span class="p">;</span>
 
 <span class="cm">/**</span>
 <span class="cm">* @cfg {string} resultsTitleText</span>

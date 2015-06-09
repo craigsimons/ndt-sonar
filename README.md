@@ -55,6 +55,10 @@ A typical procedure for branding this app might be as follows:
 
 Full developer-level documentation can be found in the [documentation/Sonar](documentation/Sonar) directory. 
 
+## Reporting
+
+A simple reporting PHP script is included (*/sonar/server/report.php*) that pushes test results to the local syslog server (or Event log for Windows). The data is supplied via a client-side AJAX call after the test is complete. This Ajax call is enabled by default, but can be turned of by changing the **reportResults** variable to *false* in the */sonar/app/config.js* file.
+
 ## Authors
 * NDT Server support for websockets and original Node.js client was written by [Peter Boothe](mailto:pboothe@google.com).
 * Further development of a full web client was done by [Aaron Brown](mailto:aaronmatthewbrown@gmail.com).

@@ -88,21 +88,29 @@
    </head>
    <body>
    <div class="highlight"><pre><span class="cm">/**</span>
-<span class="cm">* </span>
-<span class="cm">* @package Sonar.client</span>
-<span class="cm">* @author Craig Simons &lt;craigsimons@sfu.ca&gt;</span>
-<span class="cm">* @module-attributes</span>
-<span class="cm">* @license MIT</span>
-<span class="cm">* </span>
-<span class="cm">* This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at </span><span class="cp">[</span><span class="nx">https</span><span class="p">:</span><span class="c1">//code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)</span>
-<span class="o">*/</span>
+<span class="cm"> * </span>
+<span class="cm"> * @package Sonar.client</span>
+<span class="cm"> * @module-attributes</span>
+<span class="cm"> * @author Peter Booth &lt;pboothe@google.com&gt;</span>
+<span class="cm"> * @author Aaron Brown &lt;aaronmatthewbrown@gmail.com&gt;</span>
+<span class="cm"> * @author Craig Simons &lt;craigsimons@sfu.ca&gt;  </span>
+<span class="cm"> * </span>
+<span class="cm"> * This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at </span><span class="cp">[</span><span class="nx">https</span><span class="p">:</span><span class="c1">//code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)</span>
+ <span class="o">*/</span>
 
 <span class="cm">/**</span>
-<span class="cm">* </span>
-<span class="cm">* @class Sonar.client.NDTjs</span>
-<span class="cm">* </span>
-<span class="cm">* This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at [https://code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)</span>
-<span class="cm">*/</span>
+<span class="cm"> * </span>
+<span class="cm"> * @class Sonar.client.NDTjs</span>
+<span class="cm"> * @package Sonar.client</span>
+<span class="cm"> * </span>
+<span class="cm"> * This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at [https://code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)</span>
+<span class="cm"> * @param {string} server</span>
+<span class="cm"> * @param {integer} serverPort</span>
+<span class="cm"> * @param {string} serverPath</span>
+<span class="cm"> * @param {string} callbacks</span>
+<span class="cm"> * @param {integer} updateInterval</span>
+<span class="cm"> * @return {null}</span>
+<span class="cm"> */</span>
 <span class="nx">function</span> <span class="nx">NDTjs</span><span class="p">(</span><span class="nx">server</span><span class="p">,</span> <span class="nx">serverPort</span><span class="p">,</span> <span class="nx">serverPath</span><span class="p">,</span> <span class="nx">callbacks</span><span class="p">,</span> <span class="nx">updateInterval</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">this.server</span><span class="o"> =</span> <span class="nx">server</span><span class="p">;</span>
   <span class="n">this.serverPort</span><span class="o"> =</span> <span class="nx">serverPort</span> <span class="o">||</span> <span class="mi">3001</span><span class="p">;</span>
@@ -115,16 +123,24 @@
   <span class="n">this.mlabServer</span><span class="o"> =</span> <span class="nx">undefined</span><span class="p">;</span>
   <span class="n">this.SEND_BUFFER_SIZE</span><span class="o"> =</span> <span class="mi">1048576</span><span class="p">;</span>
 
-  <span class="c1">// Someone may want to run this test without callbacks (perhaps for</span>
-  <span class="c1">// debugging). Since the callbacks are referenced in various places, just</span>
-  <span class="c1">// create some empty ones if none were specified.</span>
+  <span class="c1">// Someone may want to run this test without callbacks (perhaps for debugging). Since the callbacks are referenced in various places, just create some empty ones if none were specified.</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">callbacks</span> <span class="o">===</span> <span class="nx">undefined</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">this.callbacks</span><span class="o"> =</span> <span class="p">{</span>
-      <span class="s1">&#39;onstart&#39;</span><span class="p">:</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">},</span>
-      <span class="s1">&#39;onstatechange&#39;</span><span class="p">:</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">},</span>
-      <span class="s1">&#39;onprogress&#39;</span><span class="p">:</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">},</span>
-      <span class="s1">&#39;onfinish&#39;</span><span class="p">:</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">},</span>
-      <span class="s1">&#39;onerror&#39;</span><span class="p">:</span> <span class="nx">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">},</span>
+      <span class="s1">&#39;onstart&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;onstatechange&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;onprogress&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;onfinish&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;onerror&#39;</span><span class="p">:</span> <span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">},</span>
     <span class="p">};</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="n">this.callbacks</span><span class="o"> =</span> <span class="nx">callbacks</span><span class="p">;</span>
@@ -158,526 +174,485 @@
 <span class="cm">  this.NDT_MESSAGES</span><span class="cp">[</span><span class="nx">this.MSG_LOGOUT</span><span class="cp">]</span><span class="cm"> = &#39;MSG_LOGOUT&#39;;</span>
 <span class="cm">  this.NDT_MESSAGES</span><span class="cp">[</span><span class="nx">this.MSG_WAITING</span><span class="cp">]</span><span class="cm"> = &#39;MSG_WAITING&#39;;</span>
 <span class="cm">  this.NDT_MESSAGES</span><span class="cp">[</span><span class="nx">this.MSG_EXTENDED_LOGIN</span><span class="cp">]</span><span class="cm"> = &#39;MSG_EXTENDED_LOGIN&#39;;</span>
-<span class="cm">}</span>
 
-<span class="cm">/**</span>
-<span class="cm"> * Provide feedback to the console or the DOM.</span>
-<span class="cm"> * @param {string} logMessage Message to pass to output mechanism.</span>
-<span class="cm"> * @param {!boolean=} debugging Optional (may be undefined) Determines whether </span>
-<span class="cm"> *  to output messages or to operate silently.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">logger</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">logMessage</span><span class="p">,</span> <span class="nx">debugging</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">debugging</span> <span class="o">=</span> <span class="nx">debugging</span> <span class="o">||</span> <span class="kc">false</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">debugging</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">logMessage</span><span class="p">);</span>
+<span class="cm">  /**</span>
+<span class="cm">   * Provide feedback to the console or the DOM.</span>
+<span class="cm">   * @param {string} logMessage Message to pass to output mechanism.</span>
+<span class="cm">   * @param {boolean} debugging Optional (may be undefined) Determines whether to output messages or to operate silently.</span>
+<span class="cm">   * @return {null}</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">logger</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">logMessage</span><span class="p">,</span> <span class="nx">debugging</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">debugging</span> <span class="o">=</span> <span class="nx">debugging</span> <span class="o">||</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">debugging</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">logMessage</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Check that the browser supports the NDT test.</span>
+<span class="cm">   * @return {boolean} Browser supports necessary functions for test client.</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">checkBrowserSupport</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">WebSocket</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;function&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">MozWebSocket</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
   <span class="p">}</span>
-<span class="p">};</span>
 
-<span class="cm">/**</span>
-<span class="cm"> * Check that the browser supports the NDT test.</span>
-<span class="cm"> * @returns {boolean} Browser supports necessary functions for test client.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">checkBrowserSupport</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">WebSocket</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">self</span><span class="p">.</span><span class="nx">MozWebSocket</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">throw</span> <span class="k">this</span><span class="p">.</span><span class="nx">UnsupportedBrowser</span><span class="p">(</span><span class="s1">&#39;No Websockets&#39;</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="cm">/**</span>
+<span class="cm">   * Makes a login message suitable for sending to the server.  The login messages specifies the tests to be run.</span>
+<span class="cm">   * @param {number} desiredTests The types of tests requested from the server signaled based on a bitwise operation of the test ids.</span>
+<span class="cm">   * @return {Uint8Array} NDT login message signalling the desired tests.</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">makeLoginMessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">desiredTests</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// We must support TEST_STATUS (16) as a 3.5.5+ client, so we make sure</span>
+    <span class="c1">// test 16 is desired.</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+      <span class="nx">loginMessage</span> <span class="o">=</span> <span class="s1">&#39;XXX { &quot;msg&quot;: &quot;v3.5.5&quot;, &quot;tests&quot;: &quot;&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">desiredTests</span> <span class="o">|</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span>
+      <span class="s1">&#39;&quot; }&#39;</span><span class="p">,</span>
+      <span class="nx">loginData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">loginMessage</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
 
-<span class="cm">/**</span>
-<span class="cm"> * Make an asynchronous AJAX request to M-Lab NS for the closest NDT service.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">findNdtServer</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">mlabNsRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">(),</span>
-    <span class="nx">mlabNsUrl</span> <span class="o">=</span> <span class="s1">&#39;http://mlab-ns.appspot.com/ndt?format=json&#39;</span><span class="p">,</span>
-    <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-  <span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="nx">mlabNsUrl</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
-  <span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+    <span class="nx">loginData</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">MSG_EXTENDED_LOGIN</span><span class="p">;</span>
+    <span class="nx">loginData</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// Two bytes to represent packet length</span>
+    <span class="nx">loginData</span><span class="cp">[</span><span class="mi">2</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">loginMessage</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">3</span><span class="p">;</span>
 
-  <span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">===</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">mlabServer</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">mlabServer</span><span class="p">.</span><span class="nx">metro</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">mlabServer</span><span class="p">.</span><span class="nx">site</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;M-Lab NS lookup answer:&#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">mlabServer</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">mlabServer</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;M-Lab NS lookup failed.&#39;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">loginMessage</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">loginData</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">loginMessage</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">loginData</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * A generic message creation system for NDT. (messageType, message body length </span><span class="cp">[</span><span class="mi">2</span><span class="cp">]</span><span class="cm">, message body)</span>
+<span class="cm">   * @params {number} messageType The type of message according to NDT&#39;s specification.</span>
+<span class="cm">   * @params {string} messageContent The message body.</span>
+<span class="cm">   * @return {array} An array of bytes suitable for sending on a binary websocket.</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">makeNdtMessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">messageBody</span><span class="p">,</span> <span class="nx">ndtMessage</span><span class="p">,</span> <span class="nx">i</span><span class="p">;</span>
+
+    <span class="nx">messageBody</span> <span class="o">=</span> <span class="s1">&#39;{ &quot;msg&quot;: &quot;&#39;</span> <span class="o">+</span> <span class="nx">messageContent</span> <span class="o">+</span> <span class="s1">&#39;&quot; } &#39;</span><span class="p">;</span>
+    <span class="nx">ndtMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="nx">ndtMessage</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">messageType</span><span class="p">;</span>
+    <span class="nx">ndtMessage</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">;</span>
+    <span class="nx">ndtMessage</span><span class="cp">[</span><span class="mi">2</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">ndtMessage</span><span class="cp">[</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">3</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">messageBody</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">ndtMessage</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Parses messages received from the NDT server.</span>
+<span class="cm">   * @param {object} buffer The complete message received from the NDT server.</span>
+<span class="cm">   * @return {array} Parsed messaged.</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">parseNdtMessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
+      <span class="nx">response</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">,</span>
+      <span class="nx">bufferArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">buffer</span><span class="p">),</span>
+      <span class="nx">message</span> <span class="o">=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span>
+        <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">3</span><span class="p">)));</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">response</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">bufferArray</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">response</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">response</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Exception related to low-level connectivity failures.</span>
+<span class="cm">   * @param {string} message Specific failure messages passed in the course of receiving the exception.</span>
+<span class="cm">   * @return {null}</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">ConnectionException</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onerror</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Exception related to an unsupported browser.</span>
+<span class="cm">   * @param {string} message Specific failure messages passed in the course of receiving the exception.</span>
+<span class="cm">   * @return {null}</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">UnsupportedBrowser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onerror</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Exception related to test failures, such as behavior inconsistent with expectations.</span>
+<span class="cm">   * @param {string} message Specific failure messages passed in the course of receiving the exception.</span>
+<span class="cm">   * @return {null}</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">TestFailureException</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onerror</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * A simple helper function to create websockets consistently.</span>
+<span class="cm">   * @param {string} serverAddress The FQDN or IP of the NDT server.</span>
+<span class="cm">   * @param {Number} serverPort The port expected for the NDT test.</span>
+<span class="cm">   * @param {string} urlPath The path of the resource to request from NDT.</span>
+<span class="cm">   * @param {string} protocol The WebSocket protocol to build for.</span>
+<span class="cm">   * @return {Websocket} The WebSocket we created;</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">createWebsocket</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">serverAddress</span><span class="p">,</span> <span class="nx">serverPort</span><span class="p">,</span> <span class="nx">urlPath</span><span class="p">,</span> <span class="nx">protocol</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">createdWebsocket</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="s1">&#39;ws://&#39;</span> <span class="o">+</span> <span class="nx">serverAddress</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nx">serverPort</span> <span class="o">+</span> <span class="nx">urlPath</span><span class="p">,</span> <span class="nx">protocol</span><span class="p">);</span>
+    <span class="nx">createdWebsocket</span><span class="p">.</span><span class="nx">binaryType</span> <span class="o">=</span> <span class="s1">&#39;arraybuffer&#39;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">createdWebsocket</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * NDT&#39;s Client-to-Server (C2S) Upload Test</span>
+<span class="cm">   * Serves as a closure that will process all messages for the C2S NDT test.</span>
+<span class="cm">   * @return {boolean} The test is complete and the closure should no longer be called.</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">ndtC2sTest</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">serverPort</span><span class="p">,</span> <span class="nx">testConnection</span><span class="p">,</span> <span class="nx">testStart</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span>
+      <span class="nx">dataToSend</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">SEND_BUFFER_SIZE</span><span class="p">),</span>
+      <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span><span class="p">,</span>
+      <span class="nx">totalSent</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nx">nextCallback</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">,</span>
+      <span class="nx">keepSendingData</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">dataToSend</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// All the characters must be printable, and the printable range of</span>
+      <span class="c1">// ASCII is from 32 to 126.  101 is because we need a prime number.</span>
+      <span class="nx">dataToSend</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">=</span> <span class="mi">32</span> <span class="o">+</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="mi">101</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">126</span> <span class="o">-</span> <span class="mi">32</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * The upload function for C2S, encoded as a callback instead of a loop.</span>
+<span class="cm">     */</span>
+    <span class="nx">keepSendingData</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">currentTime</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
+      <span class="c1">// Monitor the buffersize as it sends and refill if it gets too low.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">testConnection</span><span class="p">.</span><span class="nx">bufferedAmount</span> <span class="o">&lt;</span> <span class="mi">8192</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">testConnection</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">dataToSend</span><span class="p">);</span>
+        <span class="nx">totalSent</span> <span class="o">+=</span> <span class="nx">dataToSend</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
       <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">};</span>
-  <span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="nx">mlabNsUrl</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
-  <span class="nx">mlabNsRequest</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Makes a login message suitable for sending to the server.  The login</span>
-<span class="cm"> * messages specifies the tests to be run.</span>
-<span class="cm"> * @param {number} desiredTests The types of tests requested from the server</span>
-<span class="cm"> *   signaled based on a bitwise operation of the test ids.</span>
-<span class="cm"> * @returns {Uint8Array} NDT login message signalling the desired tests.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">makeLoginMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">desiredTests</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">// We must support TEST_STATUS (16) as a 3.5.5+ client, so we make sure</span>
-  <span class="c1">// test 16 is desired.</span>
-  <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
-    <span class="nx">loginMessage</span> <span class="o">=</span> <span class="s1">&#39;XXX { &quot;msg&quot;: &quot;v3.5.5&quot;, &quot;tests&quot;: &quot;&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">desiredTests</span> <span class="o">|</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span>
-                   <span class="s1">&#39;&quot; }&#39;</span><span class="p">,</span>
-    <span class="nx">loginData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">loginMessage</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
-
-  <span class="nx">loginData</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">MSG_EXTENDED_LOGIN</span><span class="p">;</span>
-  <span class="nx">loginData</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">// Two bytes to represent packet length</span>
-  <span class="nx">loginData</span><span class="cp">[</span><span class="mi">2</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">loginMessage</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">3</span><span class="p">;</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">loginMessage</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">loginData</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">loginMessage</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nx">loginData</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * A generic message creation system for NDT.</span>
-<span class="cm"> * (messageType, message body length </span><span class="cp">[</span><span class="mi">2</span><span class="cp">]</span><span class="cm">, message body)</span>
-<span class="cm"> * @params {number} messageType The type of message according to NDT&#39;s </span>
-<span class="cm"> *  specification.</span>
-<span class="cm"> * @params {string} messageContent The message body.</span>
-<span class="cm"> * @returns {array} An array of bytes suitable for sending on a binary</span>
-<span class="cm"> *  websocket.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">makeNdtMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">messageBody</span><span class="p">,</span> <span class="nx">ndtMessage</span><span class="p">,</span> <span class="nx">i</span><span class="p">;</span>
-
-  <span class="nx">messageBody</span> <span class="o">=</span> <span class="s1">&#39;{ &quot;msg&quot;: &quot;&#39;</span> <span class="o">+</span> <span class="nx">messageContent</span> <span class="o">+</span> <span class="s1">&#39;&quot; } &#39;</span><span class="p">;</span>
-  <span class="nx">ndtMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">3</span><span class="p">);</span>
-  <span class="nx">ndtMessage</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">messageType</span><span class="p">;</span>
-  <span class="nx">ndtMessage</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">;</span>
-  <span class="nx">ndtMessage</span><span class="cp">[</span><span class="mi">2</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">;</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">messageBody</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">ndtMessage</span><span class="cp">[</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">3</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">messageBody</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nx">ndtMessage</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Parses messages received from the NDT server.</span>
-<span class="cm"> * @param {object} buffer The complete message received from the NDT server.</span>
-<span class="cm"> * @returns {array} Parsed messaged.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">parseNdtMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">buffer</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span>
-    <span class="nx">response</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">,</span>
-    <span class="nx">bufferArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">buffer</span><span class="p">),</span>
-    <span class="nx">message</span> <span class="o">=</span>  <span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span>
-                                         <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">buffer</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">3</span><span class="p">)));</span>
-  <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">response</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">bufferArray</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nx">response</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
-  <span class="k">return</span> <span class="nx">response</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Exception related to low-level connectivity failures.</span>
-<span class="cm"> * @param {string} message Specific failure messages passed in the course of</span>
-<span class="cm"> *  receiving the exception.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ConnectionException</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onerror</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Exception related to an unsupported browser.</span>
-<span class="cm"> * @param {string} message Specific failure messages passed in the course of</span>
-<span class="cm"> *  receiving the exception.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">UnsupportedBrowser</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onerror</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Exception related to test failures, such as behavior inconsistent with</span>
-<span class="cm"> * expectations.</span>
-<span class="cm"> * @param {string} message Specific failure messages passed in the course of</span>
-<span class="cm"> *  receiving the exception.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">TestFailureException</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onerror</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * A simple helper function to create websockets consistently.</span>
-<span class="cm"> * @param {string} serverAddress The FQDN or IP of the NDT server.</span>
-<span class="cm"> * @param {Number} serverPort The port expected for the NDT test.</span>
-<span class="cm"> * @param {string} urlPath The path of the resource to request from NDT.</span>
-<span class="cm"> * @param {string} protocol The WebSocket protocol to build for.</span>
-<span class="cm"> * @returns {Websocket} The WebSocket we created;</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">createWebsocket</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">serverAddress</span><span class="p">,</span> <span class="nx">serverPort</span><span class="p">,</span> <span class="nx">urlPath</span><span class="p">,</span>
-                                            <span class="nx">protocol</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">createdWebsocket</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="s1">&#39;ws://&#39;</span> <span class="o">+</span> <span class="nx">serverAddress</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span>
-                                       <span class="nx">serverPort</span> <span class="o">+</span> <span class="nx">urlPath</span><span class="p">,</span> <span class="nx">protocol</span><span class="p">);</span>
-  <span class="nx">createdWebsocket</span><span class="p">.</span><span class="nx">binaryType</span> <span class="o">=</span> <span class="s1">&#39;arraybuffer&#39;</span><span class="p">;</span>
-  <span class="k">return</span> <span class="nx">createdWebsocket</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * NDT&#39;s Client-to-Server (C2S) Upload Test</span>
-<span class="cm"> * Serves as a closure that will process all messages for the C2S NDT test.</span>
-<span class="cm"> * @returns {boolean} The test is complete and the closure should no longer </span>
-<span class="cm"> *    be called.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ndtC2sTest</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">serverPort</span><span class="p">,</span> <span class="nx">testConnection</span><span class="p">,</span> <span class="nx">testStart</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span>
-    <span class="nx">dataToSend</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">SEND_BUFFER_SIZE</span><span class="p">),</span>
-    <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
-    <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span><span class="p">,</span>
-    <span class="nx">totalSent</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="nx">nextCallback</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">,</span>
-    <span class="nx">keepSendingData</span><span class="p">;</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">dataToSend</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// All the characters must be printable, and the printable range of</span>
-    <span class="c1">// ASCII is from 32 to 126.  101 is because we need a prime number.</span>
-    <span class="nx">dataToSend</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">=</span> <span class="mi">32</span> <span class="o">+</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="mi">101</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">126</span> <span class="o">-</span> <span class="mi">32</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="cm">/**</span>
-<span class="cm">   * The upload function for C2S, encoded as a callback instead of a loop.</span>
-<span class="cm">   */</span>
-  <span class="nx">keepSendingData</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">currentTime</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
-    <span class="c1">// Monitor the buffersize as it sends and refill if it gets too low.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">testConnection</span><span class="p">.</span><span class="nx">bufferedAmount</span> <span class="o">&lt;</span> <span class="mi">8192</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">testConnection</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">dataToSend</span><span class="p">);</span>
-      <span class="nx">totalSent</span> <span class="o">+=</span> <span class="nx">dataToSend</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span> <span class="o">&amp;&amp;</span> <span class="nx">currentTime</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">testStart</span> <span class="o">+</span> <span class="nx">nextCallback</span><span class="p">))</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">c2sRate</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="nx">totalSent</span> <span class="o">-</span> <span class="nx">testConnection</span><span class="p">.</span><span class="nx">bufferedAmount</span><span class="p">)</span>
-        <span class="o">/</span> <span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="nx">currentTime</span> <span class="o">-</span> <span class="nx">testStart</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onprogress</span><span class="p">(</span><span class="s1">&#39;interval_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">nextCallback</span> <span class="o">+=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">;</span>
-      <span class="nx">currentTime</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="nx">currentTime</span> <span class="o">&lt;</span> <span class="nx">testStart</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">keepSendingData</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">};</span>
-
-  <span class="cm">/**</span>
-<span class="cm">   * The closure that processes messages on the control socket for the </span>
-<span class="cm">   * C2S test.</span>
-<span class="cm">   */</span>
-  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;CALLED C2S with &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span>
-                <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) &#39;</span> <span class="o">+</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span>
-                <span class="s1">&#39; in state &#39;</span> <span class="o">+</span> <span class="nx">state</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span> <span class="o">&amp;&amp;</span>
-        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_PREPARE</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;preparing_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">serverPort</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
-      <span class="nx">testConnection</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">createWebsocket</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">server</span><span class="p">,</span> <span class="nx">serverPort</span><span class="p">,</span>
-                                            <span class="nx">that</span><span class="p">.</span><span class="nx">serverPath</span><span class="p">,</span> <span class="s1">&#39;c2s&#39;</span><span class="p">);</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_START</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;running_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">testStart</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
-      <span class="nx">keepSendingData</span><span class="p">();</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">c2sRate</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;C2S rate calculated by server: &#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">c2sRate</span><span class="p">);</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span> <span class="o">&amp;&amp;</span>
-        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_FINALIZE</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;DONE&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;C2S: State = &#39;</span> <span class="o">+</span> <span class="nx">state</span> <span class="o">+</span> <span class="s1">&#39; type = &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) message = &#39;</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">);</span>
-  <span class="p">};</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * NDT&#39;s Server-to-Client (S2C) Download Test</span>
-<span class="cm"> * Serves as a closure that will process all messages for the S2C NDT test.</span>
-<span class="cm"> * @param {Websocket} ndtSocket A websocket connection to the NDT server.</span>
-<span class="cm"> * @returns {boolean} The test is complete and the closure should no longer </span>
-<span class="cm"> *    be called.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ndtS2cTest</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ndtSocket</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">serverPort</span><span class="p">,</span> <span class="nx">testConnection</span><span class="p">,</span> <span class="nx">testStart</span><span class="p">,</span> <span class="nx">testEnd</span><span class="p">,</span> <span class="nx">errorMessage</span><span class="p">,</span>
-    <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span><span class="p">,</span>
-    <span class="nx">receivedBytes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="nx">nextCallback</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">,</span>
-    <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-
-  <span class="cm">/**</span>
-<span class="cm">  * The closure that processes messages on the control socket for the </span>
-<span class="cm">  * C2S test.</span>
-<span class="cm">  */</span>
-  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;CALLED S2C with &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span>
-                <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) in state &#39;</span> <span class="o">+</span> <span class="nx">state</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span> <span class="o">&amp;&amp;</span>
-        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_PREPARE</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;preparing_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">serverPort</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
-      <span class="nx">testConnection</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">createWebsocket</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">server</span><span class="p">,</span> <span class="nx">serverPort</span><span class="p">,</span>
-                                            <span class="nx">that</span><span class="p">.</span><span class="nx">serverPath</span><span class="p">,</span> <span class="s1">&#39;s2c&#39;</span><span class="p">);</span>
-      <span class="nx">testConnection</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Successfully opened S2C test connection.&#39;</span><span class="p">);</span>
-        <span class="nx">testStart</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
-      <span class="p">};</span>
-      <span class="nx">testConnection</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">hdrSize</span><span class="p">,</span>
-          <span class="nx">currentTime</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">byteLength</span> <span class="o">&lt;</span> <span class="mi">126</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">hdrSize</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">byteLength</span> <span class="o">&lt;</span> <span class="mi">65536</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">hdrSize</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">hdrSize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="nx">receivedBytes</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">hdrSize</span> <span class="o">+</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">byteLength</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span> <span class="o">&amp;&amp;</span> <span class="nx">currentTime</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">testStart</span> <span class="o">+</span> <span class="nx">nextCallback</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">c2sRate</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="nx">totalSent</span> <span class="o">-</span> <span class="nx">testConnection</span><span class="p">.</span><span class="nx">bufferedAmount</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="nx">currentTime</span> <span class="o">-</span> <span class="nx">testStart</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onprogress</span><span class="p">(</span><span class="s1">&#39;interval_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">nextCallback</span> <span class="o">+=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">;</span>
         <span class="nx">currentTime</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span> <span class="o">&amp;&amp;</span> <span class="nx">currentTime</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">testStart</span> <span class="o">+</span> <span class="nx">nextCallback</span><span class="p">))</span> <span class="p">{</span>
-          <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="nx">receivedBytes</span> <span class="o">/</span> <span class="mi">1000</span>
-            <span class="o">/</span> <span class="p">(</span><span class="nx">currentTime</span> <span class="o">-</span> <span class="nx">testStart</span><span class="p">);</span>
-          <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onprogress</span><span class="p">(</span><span class="s1">&#39;interval_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-          <span class="nx">nextCallback</span> <span class="o">+=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">;</span>
-          <span class="nx">currentTime</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">};</span>
-
-      <span class="nx">testConnection</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">errorMessage</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseNdtMessage</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span><span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="p">.</span><span class="nx">msg</span><span class="p">;</span>
-        <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
-      <span class="p">};</span>
-
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_START</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;running_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_FIRST_TEST_MSG&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_FIRST_TEST_MSG&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Got message: &#39;</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">));</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG_OR_TEST_FINISH&#39;</span><span class="p">;</span>
-
-      <span class="k">if</span> <span class="p">(</span><span class="nx">testEnd</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">testEnd</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
       <span class="p">}</span>
-      <span class="c1">// Calculation per spec, compared between client and server</span>
-      <span class="c1">// understanding.</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="nx">receivedBytes</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="nx">testEnd</span> <span class="o">-</span> <span class="nx">testStart</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;S2C rate calculated by client: &#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;S2C rate calculated by server: &#39;</span> <span class="o">+</span>
-                  <span class="nx">messageContent</span><span class="p">.</span><span class="nx">ThroughputValue</span><span class="p">);</span>
-      <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">,</span>
-                                         <span class="nb">String</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span><span class="p">)));</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG_OR_TEST_FINISH&#39;</span> <span class="o">&amp;&amp;</span>
-        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">web100Record</span> <span class="o">=</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">),</span>
-        <span class="nx">web100Variable</span> <span class="o">=</span> <span class="nx">web100Record</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="p">,</span>
-        <span class="nx">web100Result</span> <span class="o">=</span> <span class="nx">web100Record</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="cp">[</span><span class="nx">web100Variable</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">web100Result</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG_OR_TEST_FINISH&#39;</span> <span class="o">&amp;&amp;</span>
-        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_FINALIZE</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;NDT S2C test is complete: &#39;</span> <span class="o">+</span>  <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
-      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;S2C: State = &#39;</span> <span class="o">+</span> <span class="nx">state</span> <span class="o">+</span> <span class="s1">&#39; type = &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) message = &#39;</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">);</span>
-  <span class="p">};</span>
-<span class="p">};</span>
 
-<span class="cm">/**</span>
-<span class="cm"> * NDT&#39;s META (S2C) Download Test</span>
-<span class="cm"> * Serves as a closure that will process all messages for the META NDT test, </span>
-<span class="cm"> *    which provides additional data to the NDT results.</span>
-<span class="cm"> * @param {Websocket} ndtSocket A websocket connection to the NDT server.</span>
-<span class="cm"> * @returns {boolean} The test is complete and the closure should no longer</span>
-<span class="cm"> *    be called.</span>
-<span class="cm"> */</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ndtMetaTest</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ndtSocket</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">errorMessage</span><span class="p">,</span>
-    <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
-    <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span><span class="p">;</span>
-
-  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span> <span class="o">&amp;&amp;</span>
-        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_PREPARE</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;preparing_meta&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_START</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;running_meta&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="c1">// Send one piece of meta data and then an empty meta data packet</span>
-      <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">,</span>
-                                         <span class="s1">&#39;client.os.name:NDTjs&#39;</span><span class="p">));</span>
-      <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">));</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span><span class="p">;</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span> <span class="o">&amp;&amp;</span>
-        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_FINALIZE</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_meta&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;NDT META test complete.&#39;</span><span class="p">);</span>
-      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;Bad state and message combo for META test: &#39;</span> <span class="o">+</span>
-      <span class="nx">state</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">;</span>
-    <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
-  <span class="p">};</span>
-<span class="p">};</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Start a series of NDT tests.</span>
-<span class="cm"> **/</span>
-<span class="nx">NDTjs</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">startTest</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">ndtSocket</span><span class="p">,</span> <span class="nx">activeTest</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">errorMessage</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span>
-    <span class="nx">testsToRun</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">,</span>
-    <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-
-  <span class="k">this</span><span class="p">.</span><span class="nx">checkBrowserSupport</span><span class="p">();</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Test started.  Waiting for connection to server...&#39;</span><span class="p">);</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstart</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">server</span><span class="p">);</span>
-  <span class="nx">ndtSocket</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">createWebsocket</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">server</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">serverPort</span><span class="p">,</span>
-                                   <span class="k">this</span><span class="p">.</span><span class="nx">serverPath</span><span class="p">,</span> <span class="s1">&#39;ndt&#39;</span><span class="p">);</span>
-
-  <span class="cm">/** When the NDT control socket is opened, send a message requesting a</span>
-<span class="cm">   * TEST_S2C, TEST_C2S, and TEST_META.</span>
-<span class="cm">   */</span>
-  <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Opened connection on port &#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">serverPort</span><span class="p">);</span>
-    <span class="c1">// Sign up for every test except for TEST_MID and TEST_SFW - browsers can&#39;t</span>
-    <span class="c1">// open server sockets, which makes those tests impossible, because they</span>
-    <span class="c1">// require the server to open a connection to a port on the client.</span>
-    <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeLoginMessage</span><span class="p">(</span><span class="mi">2</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">32</span><span class="p">));</span>
-    <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;LOGIN_SENT&#39;</span><span class="p">;</span>
-  <span class="p">};</span>
-
-  <span class="cm">/** Process a message received on the NDT control socket.  The message should</span>
-<span class="cm">   * be handed off to the active test (if any), or processed directly if there</span>
-<span class="cm">   * is no active test.</span>
-<span class="cm">   */</span>
-  <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">tests</span><span class="p">,</span>
-      <span class="nx">message</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseNdtMessage</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">),</span>
-      <span class="nx">messageType</span> <span class="o">=</span> <span class="nx">message</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="p">,</span>
-      <span class="nx">messageContent</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">message</span><span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="p">);</span>
-
-    <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;type = &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span>
-                <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) body = &quot;&#39;</span> <span class="o">+</span>
-                <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">activeTest</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">activeTest</span> <span class="o">=</span> <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">activeTest</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
-      <span class="c1">// Pass the message to the sub-test</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Calling a subtest&#39;</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">activeTest</span><span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">activeTest</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Subtest complete&#39;</span><span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="c1">// If there is an active test, hand off control to the test</span>
-    <span class="c1">// Otherwise, move the coordinator state forwards.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;LOGIN_SENT&#39;</span><span class="p">)</span> <span class="p">{</span>
-      <span class="c1">// Response to NDT_LOGIN should be SRV_QUEUE messages until we</span>
-      <span class="c1">// get SRV_QUEUE(&#39;0&#39;)</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">SRV_QUEUE</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">===</span> <span class="s1">&#39;9990&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="c1">// Connection keepalive message</span>
-          <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">MSG_WAITING</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">));</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">===</span> <span class="s1">&#39;9977&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="c1">// Test failed, leave now.</span>
-          <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="s1">&#39;Server terminated test &#39;</span> <span class="o">+</span>
-            <span class="s1">&#39;with SRV_QUEUE 9977&#39;</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Got SRV_QUEUE. Ignoring and waiting for &#39;</span> <span class="o">+</span>
-          <span class="s1">&#39;MSG_LOGIN.&#39;</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_LOGIN</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span> <span class="o">!==</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Bad msg &#39;</span> <span class="o">+</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_IDS&#39;</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">currentTime</span> <span class="o">&lt;</span> <span class="nx">testStart</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">keepSendingData</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
       <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;Expected type 1 (SRV_QUEUE) or 2 (MSG_LOGIN)&#39;</span> <span class="o">+</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * The closure that processes messages on the control socket for the C2S test.</span>
+<span class="cm">     */</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;CALLED C2S with &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) &#39;</span> <span class="o">+</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span>
+        <span class="s1">&#39; in state &#39;</span> <span class="o">+</span> <span class="nx">state</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_PREPARE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;preparing_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">serverPort</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
+        <span class="nx">testConnection</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">createWebsocket</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">server</span><span class="p">,</span> <span class="nx">serverPort</span><span class="p">,</span>
+          <span class="nx">that</span><span class="p">.</span><span class="nx">serverPath</span><span class="p">,</span> <span class="s1">&#39;c2s&#39;</span><span class="p">);</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_START</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;running_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">testStart</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+        <span class="nx">keepSendingData</span><span class="p">();</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">c2sRate</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;C2S rate calculated by server: &#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">c2sRate</span><span class="p">);</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_FINALIZE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_c2s&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;DONE&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;C2S: State = &#39;</span> <span class="o">+</span> <span class="nx">state</span> <span class="o">+</span> <span class="s1">&#39; type = &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) message = &#39;</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">);</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * NDT&#39;s Server-to-Client (S2C) Download Test</span>
+<span class="cm">   * Serves as a closure that will process all messages for the S2C NDT test.</span>
+<span class="cm">   * @param {Websocket} ndtSocket A websocket connection to the NDT server.</span>
+<span class="cm">   * @return {boolean} The test is complete and the closure should no longer be called.</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">ndtS2cTest</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ndtSocket</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">serverPort</span><span class="p">,</span> <span class="nx">testConnection</span><span class="p">,</span> <span class="nx">testStart</span><span class="p">,</span> <span class="nx">testEnd</span><span class="p">,</span> <span class="nx">errorMessage</span><span class="p">,</span>
+      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span><span class="p">,</span>
+      <span class="nx">receivedBytes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nx">nextCallback</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">,</span>
+      <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * The closure that processes messages on the control socket for the </span>
+<span class="cm">     * C2S test.</span>
+<span class="cm">     */</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;CALLED S2C with &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) in state &#39;</span> <span class="o">+</span> <span class="nx">state</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_PREPARE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;preparing_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">serverPort</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
+        <span class="nx">testConnection</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">createWebsocket</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">server</span><span class="p">,</span> <span class="nx">serverPort</span><span class="p">,</span>
+          <span class="nx">that</span><span class="p">.</span><span class="nx">serverPath</span><span class="p">,</span> <span class="s1">&#39;s2c&#39;</span><span class="p">);</span>
+        <span class="nx">testConnection</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Successfully opened S2C test connection.&#39;</span><span class="p">);</span>
+          <span class="nx">testStart</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="nx">testConnection</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">hdrSize</span><span class="p">,</span>
+            <span class="nx">currentTime</span><span class="p">;</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">byteLength</span> <span class="o">&lt;</span> <span class="mi">126</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">hdrSize</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">byteLength</span> <span class="o">&lt;</span> <span class="mi">65536</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">hdrSize</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">hdrSize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="nx">receivedBytes</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">hdrSize</span> <span class="o">+</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">byteLength</span><span class="p">);</span>
+          <span class="nx">currentTime</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span> <span class="o">&amp;&amp;</span> <span class="nx">currentTime</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">testStart</span> <span class="o">+</span> <span class="nx">nextCallback</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="nx">receivedBytes</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="nx">currentTime</span> <span class="o">-</span> <span class="nx">testStart</span><span class="p">);</span>
+            <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onprogress</span><span class="p">(</span><span class="s1">&#39;interval_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+            <span class="nx">nextCallback</span> <span class="o">+=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">updateInterval</span><span class="p">;</span>
+            <span class="nx">currentTime</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">};</span>
+
+        <span class="nx">testConnection</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">errorMessage</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseNdtMessage</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span><span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="p">.</span><span class="nx">msg</span><span class="p">;</span>
+          <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
+        <span class="p">};</span>
+
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_START</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;running_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_FIRST_TEST_MSG&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_FIRST_TEST_MSG&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Got message: &#39;</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">));</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG_OR_TEST_FINISH&#39;</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">testEnd</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">testEnd</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="c1">// Calculation per spec, compared between client and server</span>
+        <span class="c1">// understanding.</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="nx">receivedBytes</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">/</span> <span class="p">(</span><span class="nx">testEnd</span> <span class="o">-</span> <span class="nx">testStart</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;S2C rate calculated by client: &#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;S2C rate calculated by server: &#39;</span> <span class="o">+</span>
+          <span class="nx">messageContent</span><span class="p">.</span><span class="nx">ThroughputValue</span><span class="p">);</span>
+        <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">,</span>
+          <span class="nb">String</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">.</span><span class="nx">s2cRate</span><span class="p">)));</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG_OR_TEST_FINISH&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">web100Record</span> <span class="o">=</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">),</span>
+          <span class="nx">web100Variable</span> <span class="o">=</span> <span class="nx">web100Record</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="p">,</span>
+          <span class="nx">web100Result</span> <span class="o">=</span> <span class="nx">web100Record</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="cp">[</span><span class="nx">web100Variable</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">web100Result</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_MSG_OR_TEST_FINISH&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_FINALIZE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_s2c&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;NDT S2C test is complete: &#39;</span> <span class="o">+</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;S2C: State = &#39;</span> <span class="o">+</span> <span class="nx">state</span> <span class="o">+</span> <span class="s1">&#39; type = &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) message = &#39;</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">);</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * NDT&#39;s META (S2C) Download Test</span>
+<span class="cm">   * Serves as a closure that will process all messages for the META NDT test, which provides additional data to the NDT results.</span>
+<span class="cm">   * @param {Websocket} ndtSocket A websocket connection to the NDT server.</span>
+<span class="cm">   * @return {boolean} The test is complete and the closure should no longer be called.</span>
+<span class="cm">   */</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">ndtMetaTest</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ndtSocket</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">errorMessage</span><span class="p">,</span>
+      <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_PREPARE&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_PREPARE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;preparing_meta&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_START&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_START</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;running_meta&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="c1">// Send one piece of meta data and then an empty meta data packet</span>
+        <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">,</span>
+          <span class="s1">&#39;client.os.name:NDTjs&#39;</span><span class="p">));</span>
+        <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">TEST_MSG</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">));</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_FINALIZE&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TEST_FINALIZE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_meta&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;NDT META test complete.&#39;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;Bad state and message combo for META test: &#39;</span> <span class="o">+</span>
+        <span class="nx">state</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">;</span>
+      <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Start a series of NDT tests.</span>
+<span class="cm">   **/</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">startTest</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">ndtSocket</span><span class="p">,</span> <span class="nx">activeTest</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">errorMessage</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span>
+      <span class="nx">testsToRun</span> <span class="o">=</span> <span class="cp">[]</span><span class="p">,</span>
+      <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">checkBrowserSupport</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Test started.  Waiting for connection to server...&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstart</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">server</span><span class="p">);</span>
+    <span class="nx">ndtSocket</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">createWebsocket</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">server</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">serverPort</span><span class="p">,</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">serverPath</span><span class="p">,</span> <span class="s1">&#39;ndt&#39;</span><span class="p">);</span>
+
+    <span class="cm">/** When the NDT control socket is opened, send a message requesting a</span>
+<span class="cm">     * TEST_S2C, TEST_C2S, and TEST_META.</span>
+<span class="cm">     */</span>
+    <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Opened connection on port &#39;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">serverPort</span><span class="p">);</span>
+      <span class="c1">// Sign up for every test except for TEST_MID and TEST_SFW - browsers can&#39;t</span>
+      <span class="c1">// open server sockets, which makes those tests impossible, because they</span>
+      <span class="c1">// require the server to open a connection to a port on the client.</span>
+      <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeLoginMessage</span><span class="p">(</span><span class="mi">2</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">32</span><span class="p">));</span>
+      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;LOGIN_SENT&#39;</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="cm">/** Process a message received on the NDT control socket.  The message should</span>
+<span class="cm">     * be handed off to the active test (if any), or processed directly if there</span>
+<span class="cm">     * is no active test.</span>
+<span class="cm">     */</span>
+    <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">tests</span><span class="p">,</span>
+        <span class="nx">message</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseNdtMessage</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">),</span>
+        <span class="nx">messageType</span> <span class="o">=</span> <span class="nx">message</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="p">,</span>
+        <span class="nx">messageContent</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">message</span><span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="p">);</span>
+
+      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;type = &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;) body = &quot;&#39;</span> <span class="o">+</span>
+        <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">activeTest</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">activeTest</span> <span class="o">=</span> <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">activeTest</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Pass the message to the sub-test</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Calling a subtest&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">activeTest</span><span class="p">(</span><span class="nx">messageType</span><span class="p">,</span> <span class="nx">messageContent</span><span class="p">)</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">activeTest</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+          <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Subtest complete&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="c1">// If there is an active test, hand off control to the test</span>
+      <span class="c1">// Otherwise, move the coordinator state forwards.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;LOGIN_SENT&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Response to NDT_LOGIN should be SRV_QUEUE messages until we</span>
+        <span class="c1">// get SRV_QUEUE(&#39;0&#39;)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">SRV_QUEUE</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">===</span> <span class="s1">&#39;9990&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Connection keepalive message</span>
+            <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">makeNdtMessage</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">MSG_WAITING</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">));</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span> <span class="o">===</span> <span class="s1">&#39;9977&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Test failed, leave now.</span>
+            <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="s1">&#39;Server terminated test &#39;</span> <span class="o">+</span>
+              <span class="s1">&#39;with SRV_QUEUE 9977&#39;</span><span class="p">);</span>
+          <span class="p">}</span>
+          <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Got SRV_QUEUE. Ignoring and waiting for &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;MSG_LOGIN.&#39;</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_LOGIN</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span> <span class="o">!==</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;Bad msg &#39;</span> <span class="o">+</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
+          <span class="p">}</span>
+          <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_TEST_IDS&#39;</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;Expected type 1 (SRV_QUEUE) or 2 (MSG_LOGIN)&#39;</span> <span class="o">+</span>
             <span class="s1">&#39;but got &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span>
             <span class="nx">that</span><span class="p">.</span><span class="nx">NDT_MESSAGES</span><span class="cp">[</span><span class="nx">messageType</span><span class="cp">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">;</span>
-        <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_IDS&#39;</span> <span class="o">&amp;&amp;</span>
-               <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_LOGIN</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">tests</span> <span class="o">=</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">);</span>
-      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="nx">tests</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">===</span> <span class="s1">&#39;2&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">ndtC2sTest</span><span class="p">());</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">===</span> <span class="s1">&#39;4&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">ndtS2cTest</span><span class="p">(</span><span class="nx">ndtSocket</span><span class="p">));</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">===</span> <span class="s1">&#39;32&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">ndtMetaTest</span><span class="p">(</span><span class="nx">ndtSocket</span><span class="p">));</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;Unknown test type: &#39;</span> <span class="o">+</span> <span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">;</span>
           <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
         <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_MSG_RESULTS&#39;</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_MSG_RESULTS&#39;</span> <span class="o">&amp;&amp;</span>
-               <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_RESULTS</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">lines</span> <span class="o">=</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">);</span>
-      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">lines</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_TEST_IDS&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_LOGIN</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">tests</span> <span class="o">=</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="nx">tests</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">===</span> <span class="s1">&#39;2&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">ndtC2sTest</span><span class="p">());</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">===</span> <span class="s1">&#39;4&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">ndtS2cTest</span><span class="p">(</span><span class="nx">ndtSocket</span><span class="p">));</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">===</span> <span class="s1">&#39;32&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">testsToRun</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">ndtMetaTest</span><span class="p">(</span><span class="nx">ndtSocket</span><span class="p">));</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;Unknown test type: &#39;</span> <span class="o">+</span> <span class="nx">tests</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">;</span>
+            <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">state</span> <span class="o">=</span> <span class="s1">&#39;WAIT_FOR_MSG_RESULTS&#39;</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_MSG_RESULTS&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_RESULTS</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="nx">messageContent</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">lines</span> <span class="o">=</span> <span class="nx">messageContent</span><span class="p">.</span><span class="nx">msg</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;\n&#39;</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">lines</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
           <span class="kd">var</span> <span class="nx">line</span> <span class="o">=</span> <span class="nx">lines</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">;</span>
           <span class="kd">var</span> <span class="nx">record</span> <span class="o">=</span> <span class="nx">line</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">);</span>
           <span class="kd">var</span> <span class="nx">variable</span> <span class="o">=</span> <span class="nx">record</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="p">;</span>
           <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">record</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span><span class="p">;</span>
           <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="cp">[</span><span class="kd">variable</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">result</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_MSG_RESULTS&#39;</span> <span class="o">&amp;&amp;</span>
-               <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_LOGOUT</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_all&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onfinish</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
-      <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;All tests successfully completed.&#39;</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;No handler for message &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">&#39;WAIT_FOR_MSG_RESULTS&#39;</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">messageType</span> <span class="o">===</span> <span class="nx">that</span><span class="p">.</span><span class="nx">MSG_LOGOUT</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onstatechange</span><span class="p">(</span><span class="s1">&#39;finished_all&#39;</span><span class="p">,</span> <span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">callbacks</span><span class="p">.</span><span class="nx">onfinish</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span>
+        <span class="nx">that</span><span class="p">.</span><span class="nx">logger</span><span class="p">(</span><span class="s1">&#39;All tests successfully completed.&#39;</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">errorMessage</span> <span class="o">=</span> <span class="s1">&#39;No handler for message &#39;</span> <span class="o">+</span> <span class="nx">messageType</span> <span class="o">+</span>
           <span class="s1">&#39; in state &#39;</span> <span class="o">+</span> <span class="nx">state</span><span class="p">;</span>
-      <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">};</span>
+        <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
 
-  <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">errorMessage</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseNdtMessage</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span><span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="p">.</span><span class="nx">msg</span><span class="p">;</span>
-    <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
+    <span class="nx">ndtSocket</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">errorMessage</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseNdtMessage</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span><span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="p">.</span><span class="nx">msg</span><span class="p">;</span>
+      <span class="k">throw</span> <span class="nx">that</span><span class="p">.</span><span class="nx">TestFailureException</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
+    <span class="p">};</span>
   <span class="p">};</span>
-<span class="p">};</span>
+<span class="p">}</span>
 </pre></div>
 
    </body>
