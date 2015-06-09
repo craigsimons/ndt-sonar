@@ -29,6 +29,17 @@ A link to the developer documentation can be found at [www.craigsimons.com/ndt-s
 - Android Browser 4.4+
 - iOS Safari 7.1+
 
+## Change Log
+#### Version 1.2
+- Simple reporting: A small PHP script (*/sonar/server/report.php*) put AJAX supplied test results into the webserver syslog. 
+
+#### Version 1.1
+- Added ability to disable results tabs (chart, details and advanced) using config.js file settings
+- Added ability	to disable Jitter and Network Latency results from summary page
+
+#### Version 1.0
+- Initial release
+
 ## Installation
 
 Simple copy the contents into a web readable directory and [customize](#customization) to suit. No use of server-side scripting languages (PHP, etc) is required.
