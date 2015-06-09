@@ -96,10 +96,10 @@
 						<h1><span id="resultsTitleText"></span></h1>
 						<div role="tabpanel">
 							<ul class="nav nav-tabs" role="tablist">
-								<li role="presentation" class="active"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab">Summary</a></li>
-								<li role="presentation"><a href="#chart" aria-controls="chart" role="tab" data-toggle="tab">Chart</a></li>
-								<li role="presentation"><a href="#details" aria-controls="details" role="tab" data-toggle="tab">Details</a></li>
-								<li role="presentation"><a href="#advanced" aria-controls="advanced" role="tab" data-toggle="tab">Advanced</a></li>
+								<li id="tab-summary" role="presentation" class="active"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab">Summary</a></li>
+								<li id="tab-chart" role="presentation"><a href="#chart" aria-controls="chart" role="tab" data-toggle="tab">Chart</a></li>
+								<li id="tab-details" role="presentation"><a href="#details" aria-controls="details" role="tab" data-toggle="tab">Details</a></li>
+								<li id="tab-advanced" role="presentation"><a href="#advanced" aria-controls="advanced" role="tab" data-toggle="tab">Advanced</a></li>
 							</ul>
 							<div class="tab-content">
 								<div role="tabpanel" class="tab-pane fade in active" id="summary">
@@ -136,8 +136,8 @@
 										</div>
 										<div class="col-md-12">
 											<p><b>Server:</b> <span id="currentServer"></span></p>
-											<p><b>Network latency:</b> <span id="latency">0.0</span> msec round trip time</p>
-											<p><b>Jitter:</b> <span id="jitter">0.0 msec</span></p>
+											<p id="summary-latency"><b>Network latency:</b> <span id="latency">0.0</span> msec round trip time</p>
+											<p id="summary-jitter"><b>Jitter:</b> <span id="jitter">0.0 msec</span></p>
 											<button type="button" id="testAgain" class="btn btn-primary">Test Again</button>
 										</div>																		                
 									</div>								

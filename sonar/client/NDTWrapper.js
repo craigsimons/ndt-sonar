@@ -1,14 +1,16 @@
 /**
  * 
  * @package Sonar.client
- * @license MIT
+ * @author Peter Booth <pboothe@google.com>
+ * @author Aaron Brown <aaronmatthewbrown@gmail.com>
+ * @author Craig Simons <craigsimons@sfu.ca> 
  * 
  * This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at [https://code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)
  */
 
 /**
  * 
- * This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at [https://code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol)
+ * This is an NDT client, written in javascript.  It speaks the websocket version of the NDT protocol.  The NDT protocol is documented at [https://code.google.com/p/ndt/wiki/NDTProtocol](https://code.google.com/p/ndt/wiki/NDTProtocol).
  * @class Sonar.client.NDTWrapper
  * @package Sonar.client
  * @param {string} server 

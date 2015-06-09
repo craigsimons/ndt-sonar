@@ -3,7 +3,6 @@
 * @package Sonar.app
 * @author Craig Simons <craigsimons@sfu.ca>
 * @module-attributes
-* @license Apache 2.0
 * 
 * Application configuration for Sonar functions contained in {@link Sonar.app.application}. These configuration items are mostly intended to allow unique branding options for each deployment of Sonar.
 * 
@@ -68,6 +67,30 @@ var simulate = false;
 * True to write more verbose data to console.log. ** Note: If using the Javascript console on your browser, the NDT results will be drastically lower. **
 */
 var allowDebug = false;
+
+/**
+* @cfg {boolean} enableChart
+* Enables the chart tab on the results page.
+*/
+var enableTabChart = true;
+
+/**
+* @cfg {boolean} enableDetails
+* Enables the details tab on the results page.
+*/
+var enableTabDetails = true;
+
+/**
+* @cfg {boolean} enableAdvanced
+* Enables the advanced tab on the results page.
+*/
+var enableTabAdvanced = true;
+
+/**
+* @cfg {boolean} enableAdvanced
+* Enables the additional data shown on the summary page (Network latency and Jitter).
+*/
+var enableSummaryExtraData = true;
 
 /**
 * @cfg {string} titleText

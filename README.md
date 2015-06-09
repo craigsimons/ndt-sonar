@@ -55,8 +55,13 @@ A typical procedure for branding this app might be as follows:
 
 Full developer-level documentation can be found in the [documentation/Sonar](documentation/Sonar) directory. 
 
+## Authors
+* NDT Server support for websockets and original Node.js client was written by [Peter Boothe](mailto://pboothe@google.com).
+* Further development of a full web client was done by [Aaron Brown](mailto://aaronmatthewbrown@gmail.com).
+* Responsive design and further polish by [Craig Simons](mailto://craigsimons@sfu.ca).
+
 ## License
-This application is licenced under Apache 2.0
+This application was originally Copyright (c) 2003 University of Chicago. The full license can be seen in the *LICENSE* file.
 
 ## Special Thanks
 Special thanks to the M-Lab team for developing a Websockets/Web Workers client. While this project exists to improve the presentability of the "Speed Test" experience, I doubt I would have been able to develop the NDTjs classes myself :)

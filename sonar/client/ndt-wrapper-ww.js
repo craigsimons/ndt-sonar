@@ -3,7 +3,9 @@
  * @package Sonar.client
  * @author Craig Simons <craigsimons@sfu.ca>
  * @module-attributes
- * @license MIT
+ * @author Peter Booth <pboothe@google.com>
+ * @author Aaron Brown <aaronmatthewbrown@gmail.com>
+ * @author Craig Simons <craigsimons@sfu.ca> 
  * 
  * This is the worker script required to run the NDT test.
  */

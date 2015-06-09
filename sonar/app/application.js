@@ -1,9 +1,10 @@
 /**
 * 
 * @package Sonar.app
-* @author Craig Simons <craigsimons@sfu.ca>
 * @module-attributes
-* @license Apache 2.0
+* @author Peter Booth <pboothe@google.com>
+* @author Aaron Brown <aaronmatthewbrown@gmail.com>
+* @author Craig Simons <craigsimons@sfu.ca> 
 * 
 * Sonar wraps the HTML5/Javascript [NDT](https://code.google.com/p/ndt/wiki/NDTProtocol) client originally developed by [M-Lab](http://www.measurementlab.net) into a more consistent and branded interface.
 * 
@@ -143,6 +144,23 @@ function init() {
 		$('#beta-message h4').html(betaMessageTitle);
 		$('#beta-message p').html(betaMessageText);
 		$('#beta-message').removeClass('hide');
+	}
+
+	//: Hide tabs if they shouldn't be displayed.
+	if (!enableTabChart) {
+		$('#tab-chart').addClass('hide');
+	}
+	if (!enableTabDetails) {
+		$('#tab-details').addClass('hide');
+	}
+	if (!enableTabAdvanced) {
+		$('#tab-advanced').addClass('hide');
+	}
+
+	//: Hide the summary data if it shouldn't be displayed
+	if (!enableSummaryExtraData) {
+		$('#summary-latency').addClass('hide');
+		$('#summary-jitter').addClass('hide');
 	}
 
 	//: populate the server select box based on data from {@link Sonar.app.config#serverList}.
