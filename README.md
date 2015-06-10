@@ -1,6 +1,6 @@
 # Sonar
 
-Sonar is an HTML5-only network diagnostic tool that utilizes the [perfSonar](http://www.perfsonar.net/) platform as well as NDT javascript libraries developed by [M-Lab](http://www.measurementlab.net/). The test determines upload and download bandwidth and can also determine some network faults such as congestion.
+Sonar is an HTML5-only network diagnostic tool that utilizes the [perfSonar](http://www.perfsonar.net/) platform as well as NDT Javascript libraries developed by [M-Lab](http://www.measurementlab.net/). The test determines upload and download bandwidth and can also determine some network faults such as congestion.
 
 #### Demo
 An online demo of an unmodified Sonar instance can be found at [www.craigsimons.com/ndt-sonar/](http://craigsimons.com/ndt-sonar/).
@@ -19,7 +19,7 @@ A link to the developer documentation can be found at [www.craigsimons.com/ndt-s
 #### Some of the weaknesses of Sonar:
 - HTML5 capable browser required
 - Web server required (no testing on local file system)
-- Questionable accuracy at high bitrates (100 MBit+)
+- Questionable accuracy at high bit rates (100 MBit+)
 
 #### Supported Browsers:
 - IE 10+
@@ -42,13 +42,13 @@ A link to the developer documentation can be found at [www.craigsimons.com/ndt-s
 
 ## Installation
 
-Simple copy the contents into a web readable directory and [customize](#customization) to suit. No use of server-side scripting languages (PHP, etc) is required.
+Simply copy the contents into a web readable directory and [customize](#customization) to suit. No use of server-side scripting languages (PHP, etc) is required.
 
 By default, Sonar is configured with a subset of [M-Lab](http://www.measurementlab.net/) nodes which are good for testing. However, it's expected that you will want to run your own install of the [perfSonar](http://www.perfsonar.net/) suite. If so, change the **serverList** attribute in the *sonar/app/config.js* file.
 
-For all other configuration items, see the code documentation (*documentaiton/Sonar/index.html*). 
+For all other configuration items, see the code documentation (*documentation/Sonar/index.html*). 
 
-**Note:** The documenation is readable on the local file sytem without having to upload it to a file server.
+**Note:** The documentation is readable on the local file sytem without having to upload it to a file server.
 
 ## Customization
 

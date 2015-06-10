@@ -271,9 +271,9 @@ function createChart() {
 		resize: true,
 		hoverCallback: function (index, options, content, row) {
 			var markup = '<div class="morris-hover-point" style="color: #0b62a4">';
-			markup += '  Upload Speed: <span style="color: black;">' + parseFloat(row.upload).toFixed(1) + '</span>';
+			markup += '  Upload Speed: <span style="color: black;">' + (isNaN(parseFloat(row.upload)) ? '-' : parseFloat(row.upload).toFixed(1) + ' Mbps') + '</span>';
 			markup += '</div><div class="morris-hover-point" style="color: #7A92A">';
-			markup += '  Download Speed: <span style="color: black;">' + parseFloat(row.download).toFixed(1) + '</span>';
+			markup += '  Download Speed: <span style="color: black;">' + (isNaN(parseFloat(row.download)) ? '-' : parseFloat(row.download).toFixed(1) + ' Mbps') + '</span>';
 			markup += '</div>';
 			return markup;
 		}
@@ -755,20 +755,20 @@ function setPhase(phase) {
 			var downloadSpeed = getPeakSpeed(downloadData);
 			if (downloadSpeed >= 1000) {
 				$('#download-speed').text(parseFloat(downloadSpeed/1000).toFixed(2));
-				$('#download-speed-units').text('gb/s');
+				$('#download-speed-units').text('Gb/s');
 			} else {
 				$('#download-speed').text(parseFloat(downloadSpeed).toFixed(2));
-				$('#download-speed-units').text('mb/s');
+				$('#download-speed-units').text('Mb/s');
 			}
 
 			//: Get upload speed
 			var uploadSpeed = getPeakSpeed(uploadData);
 			if (uploadSpeed >= 1000) {
 				$('#upload-speed').text(parseFloat(uploadSpeed/1000).toFixed(2));
-				$('#upload-speed-units').text('gb/s');
+				$('#upload-speed-units').text('Gb/s');
 			} else {
 				$('#upload-speed').text(parseFloat(uploadSpeed).toFixed(2));
-				$('#upload-speed-units').text('mb/s');
+				$('#upload-speed-units').text('Mb/s');
 			}
 
 			//: get Jitter
