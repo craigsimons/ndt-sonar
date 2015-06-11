@@ -196,7 +196,8 @@ function reportResults() {
 		"download": getPeakSpeed(downloadData),
 		"upload": getPeakSpeed(uploadData),
 		"latency": Math.round(getNDTAverageRoundTrip()),
-		"jitter": getNDTJitter()
+		"jitter": getNDTJitter(),
+		"packetLoss": getFormattedPacketLossValue()
 	};
 
 	$.ajax({

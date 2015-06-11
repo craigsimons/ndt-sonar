@@ -83,6 +83,12 @@ $latency = isset($_POST["latency"]) ? (float)$_POST["latency"] : 0;
 $jitter = isset($_POST["jitter"]) ? (float)$_POST["jitter"] : 0;
 
 /**
+* The maximum upload speed acheived in the test.
+* @var float
+*/
+$packetLoss = isset($_POST["packetLoss"]) ? (float)$_POST["packetLoss"] : 0;
+
+/**
 * A multidimensional array (hash) of the results. This array will be JSON serialized into the syslog message.
 * @var array
 */
@@ -94,7 +100,8 @@ $result = array(
 	"download" => $downloadResult,
 	"upload" => $uploadResult,
 	"latency" => $latency,
-	"jitter" => $jitter
+	"jitter" => $jitter,
+	"packetLoss" => $packetLoss
 );
 
 writeToSyslog($syslogID, $syslogFacility, json_encode($result));
